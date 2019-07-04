@@ -13,6 +13,7 @@ def researcheruser_post_save(sender, instance, created, raw, using, **kwargs):
     if created:
         if instance.is_researcher:
             models = ['researchadminproxyforresearch', 'game', 'agree']
+            q = Q()
             for model in models:
                 q |= Q(codename__icontains=model)
             permissions = Permission.objects.filter(q)
