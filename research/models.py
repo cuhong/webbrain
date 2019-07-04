@@ -31,7 +31,6 @@ class Research(models.Model):
     reward = models.BooleanField(default=False, verbose_name='리워드 제공')
     reward_description = models.CharField(max_length=300, null=True, blank=True, verbose_name='리워드 내용')
     tags = TaggableManager(verbose_name='태그', blank=True)
-    agree_check = models.ManyToManyField('Agree', null=True, blank=True, verbose_name='동의 조건')
     agree_name = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성명)')
     agree_tel = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(전화번호)')
     agree_gender = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성별)')
@@ -72,6 +71,7 @@ class Research(models.Model):
 
 
 class Agree(models.Model):
+    research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구')
     item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
 
 
