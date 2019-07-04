@@ -52,10 +52,6 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
 
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
-    def __call__(self, *args, **kwargs):
-        self.request = kwargs['request']
-        return super(ResearchModelAdmin, self).__call__(*args, **kwargs)
-
     def link(self, obj):
         url = reverse('participate:index', kwargs={'research_hex': 'ddd'})
         full_url = ''.join(['http://', get_current_site(self.request).domain, url])
@@ -64,6 +60,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     link.short_description = '주소'
 
     def get_queryset(self, request):
+        self.request = request
         queryset = super(ResearchModelAdmin, self).get_queryset(request)
         return queryset.filter(user=request.user)
 
