@@ -45,14 +45,17 @@ class AgreeInlineAdmin(admin.StackedInline):
 class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
 
     # 연구자용 연구 페이지
-    list_display = ('project_title', 'user', 'status')
+    list_display = ('project_title', 'user', 'status', 'link')
     readonly_fields = ('status', 'user',)
     summernote_fields = ('project_agreement',)
 
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def link(self, obj):
-        url = reverse('participate:index')
+        url = reverse('participate:index', kwargs={'research_hex': obj.hex})
+        return url
+
+    link.short_description = '주소'
 
     def get_queryset(self, request):
         queryset = super(ResearchModelAdmin, self).get_queryset(request)
