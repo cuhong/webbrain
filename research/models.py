@@ -71,7 +71,7 @@ class Research(models.Model):
 
 
 class Agree(models.Model):
-    research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구')
+    research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구', on_delete=models.PROTECT)
     item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
 
 
