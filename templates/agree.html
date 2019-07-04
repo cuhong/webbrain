@@ -60,31 +60,17 @@
                 {% autoescape off %}
                     {{ research.project_agreement }}
                 {% endautoescape %}
-                <p class="MsoNormal" align="left" style="margin-left: 40pt; text-align: left;"><span lang="EN-US"
-                                                                                                     style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">
+                <p></p></span></span></b></p>
                 <p class="MsoNormal" align="left" style="text-align: left;">
                     <span style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">모든 설명을 읽고 이 연구에 참여하기로 결정하였다면 아래의 항목을 체크해 주세요.</span>
                 </p>
-                <p class="MsoNormal" align="left" style="margin-left: 40pt; text-align: left;"><span lang="EN-US"
-                                                                                                     style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">
+                <p></p></span></span></b></p>
                 <div class="custom-control custom-checkbox">
                     {% for agree in research.agree_set.all %}
                         <input type="checkbox" class="custom-control-input" id="agree_{{ forloop.counter }}">
                         <label class="custom-control-label" for="agree_{{ forloop.counter }}">{{ agree.item }}</label>
                     {% endfor %}
                 </div>
-
-
-                <p class="MsoNormal" align="left" style="margin-left: 40pt; text-align: left;"><span lang="EN-US"
-                                                                                                     style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">
-                <p></p></span><span style="font-family: Nanum Gothic, sans-serif; font-size: 11pt;"></span></p>
-                <p class="MsoNormal" align="left" style="text-align: left;"><b><span
-                        style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">이름과 날짜를 입력해 주세요<span
-                        lang="EN-US">.<br><br>
-                <p></p></span></span></b></p>
-                <p class="MsoNormal" align="left" style="text-align: left;"><b><span
-                        style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">이름<span
-                        lang="EN-US">:</span>날짜<span lang="EN-US">:
                 <p></p></span></span></b></p>
             </div>
 
