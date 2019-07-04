@@ -52,7 +52,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def link(self, obj):
-        url = reverse('')
+        url = reverse('participate:index')
 
     def get_queryset(self, request):
         queryset = super(ResearchModelAdmin, self).get_queryset(request)
