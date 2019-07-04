@@ -53,7 +53,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def link(self, obj):
-        url = reverse('participate:index', kwargs={'research_hex': 'ddd'})
+        url = reverse('participate:index', kwargs={'research_hex': obj.hex})
         full_url = ''.join(['http://', get_current_site(self.request).domain, url])
         return full_url
 
