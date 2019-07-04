@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/webbrain
+ExecStart=/home/ubuntu/webbrain/.env/bin/gunicorn --workers 3 --reload --bind unix:/home/ubuntu/webbrain/server/gunicorn.sock webbrain.wsgi:application --access-logfile /home/ubuntu/webbrain/server/log/gunicorn-access.log --error-logfile /home/ubuntu/webbrain/server/log/gunicorn-error.log
+
+[Install]
+WantedBy=multi-user.target

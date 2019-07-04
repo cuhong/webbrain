@@ -1,0 +1,29 @@
+server {
+        listen 80;
+        server_name monet_webbrain;
+
+        client_max_body_size 1G;
+
+        access_log /home/ubuntu/webbrain/server/log/nginx-access.log;
+        error_log /home/ubuntu/webbrain/server/log/nginx-error.log;
+
+        location /elb-status {
+            access_log off;
+            return 200;
+        }
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/home/ubuntu/webbrain/server/gunicorn.sock;
+        }
+
+        location /static {
+            autoindex on;
+            alias /home/ubuntu/webbrain/static/;
+        }
+
+        location /media {
+            autoindex on;
+            alias /home/ubuntu/webbrain/media/;
+        }
+}
