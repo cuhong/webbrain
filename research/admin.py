@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
 from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin
 from ordered_model.models import OrderedModel
@@ -49,6 +50,9 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     summernote_fields = ('project_agreement',)
 
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
+
+    def link(self, obj):
+        url = reverse('')
 
     def get_queryset(self, request):
         queryset = super(ResearchModelAdmin, self).get_queryset(request)

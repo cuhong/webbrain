@@ -11,7 +11,7 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('research/', research_site.urls),
     path('admin/', admin_site.urls),
-    path('participate/', include('participate.urls')),
+    path('participate/', include('participate.urls', namespace='participate')),
     path('game_test/<int:research_id>/<int:game_id>/', GameView.as_view()),
 ]
 
