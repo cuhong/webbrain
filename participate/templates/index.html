@@ -63,10 +63,25 @@
 </header>
 
 
-<!-- Copyright Section -->
-<section class="copyright py-4 text-center text-white">
+<section class="page-section portfolio" id="portfolio">
     <div class="container">
-        <small>Copyright &copy; Your Website 2019</small>
+
+        <!-- Portfolio Grid Items -->
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                {% autoescape off %}
+                    {{ research.project_agreement }}
+                {% endautoescape %}
+            <form>
+                {% for agree in research.agree_set_all %}
+            <input type="checkbox" value="asd" id="agree_1" name="agree_1"> test
+                {% endfor %}
+            </form>
+            </div>
+
+        </div>
+        <!-- /.row -->
+
     </div>
 </section>
 
