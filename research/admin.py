@@ -4,7 +4,7 @@ from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin
 from ordered_model.models import OrderedModel
 
 from research.forms import ResearchAdminAuthenticationForm
-from research.models import ResearchAdminProxyForResearch, Game, Research
+from research.models import ResearchAdminProxyForResearch, Game, Research, Agree
 
 
 class ResearchAdmin(admin.AdminSite):
@@ -34,6 +34,12 @@ class GameInlineAdmin(OrderedTabularInline):
     ordering = ('order',)
 
 
+class AgreeInlineAdmin(admin.StackedInline):
+    model = Agree
+    fields = ('item',)
+    extra = 3
+
+
 @admin.register(ResearchAdminProxyForResearch, site=research_site)
 class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
 
@@ -42,7 +48,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     readonly_fields = ('status', 'user',)
     summernote_fields = ('project_agreement',)
 
-    inlines = (GameInlineAdmin,)
+    inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def get_queryset(self, request):
         queryset = super(ResearchModelAdmin, self).get_queryset(request)

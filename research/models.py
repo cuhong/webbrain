@@ -31,6 +31,7 @@ class Research(models.Model):
     reward = models.BooleanField(default=False, verbose_name='리워드 제공')
     reward_description = models.CharField(max_length=300, null=True, blank=True, verbose_name='리워드 내용')
     tags = TaggableManager(verbose_name='태그', blank=True)
+    agree_check = models.ManyToManyField('Agree', null=True, blank=True, verbose_name='동의 조건')
     agree_name = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성명)')
     agree_tel = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(전화번호)')
     agree_gender = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성별)')
@@ -40,7 +41,7 @@ class Research(models.Model):
     condition_age_max = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 상한)')
     condition_gender = models.IntegerField(choices=CONDITION_GENDER_CHOICES, default=0, verbose_name='연구참여조건(성별)')
 
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0, null=False, blank=False, verbose_name='상태')
+    status = models.IntegerField(choices=STATUS_CHOICES, default=1, null=False, blank=False, verbose_name='상태')
 
     def __str__(self):
         return self.project_title
@@ -67,12 +68,11 @@ class Research(models.Model):
         """
         연구의 승인여부와, 시작/종료일 확인 후 True/False 반환
         """
-        if not self.status == 2:
-            return False
-        today = timezone.localdate()
-        if today <= self.project_end_date and today >= self.project_start_date:
-            return True
-        return False
+        return self.status == 2
+
+
+class Agree(models.Model):
+    item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
 
 
 class ResearchAdminProxyForResearch(Research):
