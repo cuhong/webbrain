@@ -1,0 +1,7 @@
+{% if stimulus.type == 'text' %}
+    '<p style="{% if stimulus.font_size %}font_size:{{ stimulus.font_size }}; {% endif %}{% if stimulus.font_color %}font_color:{{ stimulus.font_color }}{% endif %}">{{ stimulus.body }}</p>'
+{% elif stimulus.type == 'text_file' %}
+    '<p style="{% if stimulus.font_size %}font_size:{{ stimulus.font_size }}; {% endif %}{% if stimulus.font_color %}font_color:{{ stimulus.font_color }}{% endif %}">{{ stimulus.body }}'
+{% else %}
+    '{{ stimulus.body }}'
+{% endif %}

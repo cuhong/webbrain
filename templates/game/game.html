@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ game_title }}</title>
+    <meta charset="UTF-8">
+    <script src="{% static "jspsych-6.0.5/jspsych.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-html-button-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-image-button-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-audio-button-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-audio-keyboard-response.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-video.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-fullscreen.js" %}"></script>
+    <script src="{% static "jspsych-6.0.5/plugins/jspsych-categorize-html.js" %}"></script>
+    <script src="{% static "jquery-3.4.1/jquery-3.4.1.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static 'jspsych-6.0.5/css/jspsych.css' %}">
+</head>
+<body>
+<script type="text/javascript">
+    var timeline = [];
+    var start_time_list = [];
+    var end_time_list = [];
+    const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
+    timeline.push({
+        type: 'fullscreen',
+    });
+    {% if data.preseq %}
+        {% for sequence in data.preseq %}
+            {% include 'game/include/timeline.html' %}
+
+
+            {% if sequence.feed_back_type is 'c' %}
+                timeline.push({
+                    type: {% include 'game/include/type_b2k.html' %},
+                    stimulus:jsPsych.data.get().last(1).values()[0].choices[jsPsych.data.get().last(1).values()[0].button_pressed],
+                {% if sequence.feed_back_duration %}
+                    trial_duration: {{ sequence.feed_back_duration }}
+                {% endif %}
+                });
+            {% elif sequence.feed_back_type is 'tf' %}
+                timeline.push({
+                    timeline: [{
+                        {% with sequence=sequence.feed_back_1 %}
+                        type: {% include 'game/include/type_b2k.html' %},
+                        stimulus: {% include 'game/include/stimulus.html' %},
+                        {% endwith %}
+                        trial_duration: {{ sequence.feed_back_duration }},
+                        }],
+                    conditional_function: function (data) {
+                        var _data = jsPsych.data.get().last(1).values()[0];
+                        return data.correct_response == data.button_pressed
+                    }
+                });
+                timeline.push({
+                    timeline: [{
+                        {% with sequence=sequence.feed_back_2 %}
+                        type: {% include 'game/include/type_b2k.html' %},
+                        stimulus: {% include 'game/include/stimulus.html' %},
+                        {% endwith %}
+                        trial_duration: {{ sequence.feed_back_duration }},
+                        }],
+                    conditional_function: function (data) {
+                        var _data = jsPsych.data.get().last(1).values()[0];
+                        return data.correct_response == data.button_pressed
+                    }
+                })
+            {% endif %}
+
+
+        {% endfor %}
+        {% for sequence in data.mainseq %}
+            {% include 'game/include/timeline.html' %}
+        {% endfor %}
+        {% for sequence in data.endseq %}
+            {% include 'game/include/timeline.html' %}
+        {% endfor %}
+    {% endif %}
+{##}
+{#            {% for sequence in sequence_list %}#}
+{#                for seq in sequence_list:#}
+{#            body_string += seq.add_sequence_block() + seq.add_feedback_block()#}
+{#            {% endfor %}#}
+    timeline.push({
+        type: 'html-keyboard-response',
+        stimulus: function () {
+            var trials = jsPsych.data.get().filter({test_part: "test"});
+            var rt = null;
+            if (trials.count() > 0) {
+                var correct_trials = trials.filter({correct: true});
+                var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+                rt = trials.select('rt').values;
+                console.log(accuracy);
+                console.log(start_time_list);
+                console.log(end_time_list);
+                console.log(rt);
+                /* yumin accuracy */
+                return "<p>You responded correctly on " + accuracy + "% of the trials.</p>" +
+                    "<p>Your average response time was " + average(rt) / 1000 + "s.</p>";
+            } else {
+                rt = trials.select('rt').values;
+                console.log(start_time_list);
+                console.log(end_time_list);
+                console.log(rt);
+                /* yumin no accuracy */
+                return "<p>Your average response time was " + average(rt) / 1000 + "s.</p>";
+            }
+        },
+        trial_duration: 10000,
+    });
+
+    jsPsych.init({
+        timeline: timeline,
+        show_preload_progress_bar: true,
+        on_finish: function () {
+            jsPsych.data.get().localSave('csv', 'data.csv');
+        }
+    })
+</script>
+</body>
+
+

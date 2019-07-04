@@ -1,0 +1,8 @@
+{% if sequence.stim.type == 'text' %}{% if sequence.choices %}'html-keyboard-response'
+{% else %}'html-keyboard-response'{% endif %}
+    {% elif sequence.stim.type == 'text_file' %}{% if sequence.choices %}'html-keyboard-response'
+    {% else %}'html-keyboard-response'{% endif %}
+{% elif sequence.stim.type == 'video' %}'video-keyboard-response'
+{% elif sequence.stim.type == 'image' %}'image-keyboard-response'{% elif sequence.stim.type == 'audio' %}
+    'audio-button-response'
+{% endif %}

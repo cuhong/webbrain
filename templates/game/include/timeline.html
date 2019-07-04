@@ -1,0 +1,62 @@
+timeline.push({
+type: {% include 'game/include/type.html' %},
+stimulus: {% with stimulus=sequence.stim %}{% include 'game/include/stimulus.html' %}{% endwith %},
+{% if sequence.stimDur %}
+stimulus_duration: {{ sequence.stimDur }},
+{% endif %}
+{% if sequence.reactionTime %}
+trial_duration: {{ sequence.reactionTime }},
+{% endif %}
+{% if not sequence.choices %}
+    choices: jsPsych.NO_KEYS,
+{% else %}
+    choices: [
+    {% for choice in sequence.choices %}
+        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    {% endfor %}],
+{% endif %}
+
+{% if sequence.answer %}
+    {% if sequence.test %}
+        data: {
+        correct_response: {{ sequence.answer_identifier }},
+        test_part: "test"
+        },
+    {% else %}
+        data: {
+        correct_response: {{ sequence.answer_identifier }},
+        },
+    {% endif %}
+    {% if sequence.test %}
+        on_finish: function (data) {
+        data.correct = data.button_pressed == data.correct_response;
+        var current_time = new Date();
+        end_time_list.push(current_time);
+        data.choices = [{% for choice in sequence.choices %}
+        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    {% endfor %}]
+        },
+        on_load: function (data) {
+        var current_time = new Date();
+        start_time_list.push(current_time);
+        },
+    {% endif %}
+{% else %}
+    {% if sequence.test %}
+        data: {
+        test_part: "test"
+        },
+        on_finish: function (data) {
+        var current_time = new Date();
+        end_time_list.push(current_time);
+        data.choices = [{% for choice in sequence.choices %}
+        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    {% endfor %}]
+        },
+        on_load: function (data) {
+        var current_time = new Date();
+        start_time_list.push(current_time);
+        },
+    {% endif %}
+{% endif %}
+});
