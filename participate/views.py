@@ -14,5 +14,5 @@ class ParticipateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ParticipateView, self).get_context_data(**kwargs)
         research_hex = self.kwargs['research_hex']
-        context['research'] = get_object_or_404(Research, hex=research_hex)
+        context['research'] = get_object_or_404(Research.objects.prefetch_related('agree_set'), hex=research_hex)
         return context
