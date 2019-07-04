@@ -52,16 +52,12 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
         if obj:
             fieldsets = (
                 ('기본정보', {'fields': (
-                    'project_title', 'project_description', 'project_agreement', 'project_start_date',
-                    'project_end_date',
-                    'tags', 'status',)}),
+                    'project_title', 'project_description', 'project_agreement', 'project_start_date', 'tags', 'status',)}),
             )
         else:
             fieldsets = (
                 ('기본정보', {'fields': (
-                    'project_title', 'project_description', 'project_agreement', 'project_start_date',
-                    'project_end_date',
-                    'tags')}),
+                    'project_title', 'project_description', 'project_agreement', 'project_start_date', 'tags')}),
             )
         fieldsets += (
             ('동의조건', {'fields': ('agree_name', 'agree_tel', 'agree_gender', 'agree_email', 'agree_age')}),

@@ -27,7 +27,6 @@ class Research(models.Model):
                                      help_text='300자 미만 입력')
     project_description = models.TextField(null=False, blank=False, verbose_name='프로젝트 설명')
     project_start_date = models.DateField(null=False, blank=False, verbose_name='연구 시작일')
-    project_end_date = models.DateField(null=False, blank=False, verbose_name='연구 종료일')
     project_agreement = models.TextField(null=False, blank=False, verbose_name='연구동의서')
     reward = models.BooleanField(default=False, verbose_name='리워드 제공')
     reward_description = models.CharField(max_length=300, null=True, blank=True, verbose_name='리워드 내용')
@@ -47,8 +46,6 @@ class Research(models.Model):
         return self.project_title
 
     def clean(self):
-        if self.project_start_date > self.project_end_date:
-            raise ValidationError("연구 종료일은 연구 시작일 이전일 수 없습니다.")
         if self.condition_age_max or self.condition_age_min:
             if not self.agree_age:
                 raise ValidationError("연구참여조건에 나이가 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
@@ -91,7 +88,6 @@ class Game(OrderedModel):
         ordering = ('research', 'order')
 
     order = models.PositiveIntegerField(verbose_name='순서', editable=False, db_index=True)
-
     registered_at = models.DateTimeField(auto_now_add=True)
     research = models.ForeignKey(ResearchAdminProxyForResearch, on_delete=models.PROTECT, verbose_name='연구', editable=False)
     game_title = models.CharField(max_length=300, null=False, blank=False, verbose_name='게임명')

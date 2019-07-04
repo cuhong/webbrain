@@ -9,8 +9,8 @@ from research.views import GameView
 urlpatterns = [
     path('jet/', include('jet.urls')),
     path('summernote/', include('django_summernote.urls')),
-    path('research_site/', research_site.urls),
-    path('admin_site/', admin_site.urls),
+    path('research/', research_site.urls),
+    path('admin/', admin_site.urls),
     path('participate/', include('participate.urls')),
     path('game_test/<int:research_id>/<int:game_id>/', GameView.as_view()),
 ]
