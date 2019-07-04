@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
 from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin
@@ -52,8 +53,9 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def link(self, obj):
-        url = reverse('participate:index', kwargs={'research_hex': obj.hex})
-        return url
+        url = reverse('participate:index', kwargs={'research_hex': 'ddd'})
+        full_url = ''.join(['http://', get_current_site(self.request).domain, url])
+        return full_url
 
     link.short_description = '주소'
 
