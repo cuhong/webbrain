@@ -90,6 +90,7 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
 
 @admin.register(Participate, site=research_site)
 class ParticipateAdmin(admin.ModelAdmin):
+    list_display = ['research', 'participate_at', 'research', 'agree_name', 'agree_date', 'is_finish']
     def get_queryset(self, request):
         self.request = request
         queryset = super(ParticipateAdmin, self).get_queryset(request)
