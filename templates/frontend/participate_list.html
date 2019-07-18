@@ -15,19 +15,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td colspan="3">실험 제목</td>
-                        <td>홍길동</td>
-                        <td>2019.03.01</td>
-                        <td>완료</td>
-                    </tr>
                     {% for participate in participate_list %}
-                    <tr>
-                        <td>{{ participate.research.project_title }}</td>
-                        <td>{{ participate.research.user }}</td>
-                        <td>{{ participate.participate_at }}</td>
-                        <td>{{ participate.is_finish }}</td>
-                    </tr>
+                        <tr>
+                            <td>{{ participate.research.project_title }}</td>
+                            <td>{{ participate.research.user }}</td>
+                            <td>{{ participate.participate_at }}</td>
+                            <td>{{ participate.is_finish }}</td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
