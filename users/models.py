@@ -52,7 +52,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     is_researcher = models.BooleanField(
         verbose_name='연구자',
-        default=None
+        default=False
     )
     is_researcher_accepted_at = models.DateTimeField(
         verbose_name='연구자 승인 일시',

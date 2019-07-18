@@ -23,7 +23,7 @@ services:
 # callcrm database 생성 > CREATE DATABASE cardata
 # callcrm 유저에게 callcrm 데이터베이스 모든 권한 부여 > GRANT ALL ON DATABASE cardata TO itechs
 
-# temp db 생성 : docker exec -it cardata psql -d cardata -U itechs -c "create database temp"
+# temp db 생성 : docker exec -it webrain psql -d webrain -U webrain -c "create database temp"
 # cardata db 삭제 : docker exec -it cardata psql -d temp -U itechs -c "drop database cardata"
 # cardata db 재생성 : docker exec -it cardata psql -d temp -U itechs -c "create database cardata"
 # cardata db 권한부여 : docker exec -it cardata psql -d temp -U itechs -c "GRANT ALL ON DATABASE cardata TO itechs"
