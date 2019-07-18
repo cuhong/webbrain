@@ -50,7 +50,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name='관리자',
         default=False
     )
-    is_researcher = models.NullBooleanField(
+    is_researcher = models.BooleanField(
         verbose_name='연구자',
         default=None
     )

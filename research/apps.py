@@ -6,4 +6,4 @@ class ResearchConfig(AppConfig):
     verbose_name = '연구관리'
 
     def ready(self):
-        from research.signals import research_post_save
+        from research.signals import game_post_save

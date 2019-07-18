@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>MONET Webbrain</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'frontend/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+{% block navigation %}
+    {% include 'frontend/partial/navigation.html' %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'frontend/vendor/jquery/jquery.slim.min.js' %}"></script>
+<script src="{% static 'frontend/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

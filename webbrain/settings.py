@@ -5,7 +5,7 @@ SECRET_KEY = 'e$mu))=4o0(x4=n5auxg=^+w^oy7z2*@l%i8^g&wh$6on@prqw'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.124.82.23']
+ALLOWED_HOSTS = ['13.124.82.23', '127.0.0.1']
 
 INSTALLED_APPS = [
     'jet',
@@ -20,7 +20,8 @@ INSTALLED_APPS = [
     'django_summernote',
     'users.apps.UsersConfig',
     'administration.apps.AdministrationConfig',
-    'research.apps.ResearchConfig'
+    'research.apps.ResearchConfig',
+    'participate.apps.ParticipateConfig'
 ]
 
 JET_SIDE_MENU_COMPACT = True
@@ -35,7 +36,7 @@ JET_SIDE_MENU_ITEMS = {
         {'label': '사용자관리', 'items': [
             {'name': 'users.researcheruser', 'label': '연구자'},
             {'name': 'users.staffuser', 'label': '관리자'},
-            {'name': 'users.participantuser', 'label': '피험자'},
+            {'name': 'users.participantuser', 'label': '참여자'},
         ]},
         {'label': '연구관리', 'items': [
             {'name': 'research.researchadminproxy', 'label': '연구목록'},

@@ -1,0 +1,92 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="mt-5">{{ research.project_title }}</h1>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                {% autoescape off %}
+                    {{ research.project_agreement }}
+                {% endautoescape %}
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="pb-3">
+                    <span class="h5">모든 설명을 읽고 이 연구에 참여하기로 결정하였다면 아래의 항목을 체크해 주세요.</span>
+                </div>
+                {% for agree in research.agree_set.all %}
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input agreeCheckbox"
+                               id="agree_{{ forloop.counter }}">
+                        <label class="custom-control-label" for="agree_{{ forloop.counter }}">{{ agree.item }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-6">
+                <form id="agreeSign" method="post" novalidate>
+                    {% csrf_token %}
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" class="form-control">
+                    <label for="date">날짜</label>
+                    <input type="date" id="date" name="date" class="form-control">
+                    <button class="btn btn-primary btn-rounded btn-block my-4" type="button"
+                            onclick="agree()">동의하고 연구 참여
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function agree() {
+            var checkbox = document.getElementsByClassName('agreeCheckbox');
+            var chk = [];
+            for (var i = 0; i < checkbox.length; i++) {
+                if (checkbox[i].checked) {
+                    chk.push(true)
+                } else {
+                    chk.push(false)
+                }
+            }
+            var _chk = chk.every(function (element, index, array) {
+                if (element == true) {
+                    return true
+                } else {
+                    return false
+                }
+            });
+            if (_chk) {
+                nameDate();
+            } else {
+                alert('모든 동의 항목에 동의해주세요.');
+            }
+        }
+
+        function nameDate() {
+            var form = document.getElementById('agreeSign');
+            var name = document.getElementById('name');
+            var date = document.getElementById('date');
+            var chk = [];
+            if (name.value == "") {chk.push(false)} else {chk.push(true)};
+            if (name.date == "") {chk.push(false)} else {chk.push(true)};
+            var _chk = chk.every(function (element, index, array) {
+                if (element == true) {
+                    return true
+                } else {
+                    return false
+                }
+            });
+            if (_chk) {
+                form.submit();
+            } else {
+                alert('이름과 날짜를 입력해주세요.');
+            }
+
+        }
+    </script>
+{% endblock %}

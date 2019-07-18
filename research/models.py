@@ -1,6 +1,8 @@
+import os
 import uuid
 
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 from ordered_model.models import OrderedModel
@@ -31,11 +33,6 @@ class Research(models.Model):
     reward = models.BooleanField(default=False, verbose_name='리워드 제공')
     reward_description = models.CharField(max_length=300, null=True, blank=True, verbose_name='리워드 내용')
     tags = TaggableManager(verbose_name='태그', blank=True)
-    agree_name = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성명)')
-    agree_tel = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(전화번호)')
-    agree_gender = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(성별)')
-    agree_email = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(이메일)')
-    agree_age = models.BooleanField(default=False, verbose_name='개인정보수집 동의 요구(연령)')
     condition_age_min = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 하한)')
     condition_age_max = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 상한)')
     condition_gender = models.IntegerField(choices=CONDITION_GENDER_CHOICES, default=0, verbose_name='연구참여조건(성별)')
@@ -45,22 +42,22 @@ class Research(models.Model):
     def __str__(self):
         return self.project_title
 
-    def clean(self):
-        if self.condition_age_max or self.condition_age_min:
-            if not self.agree_age:
-                raise ValidationError("연구참여조건에 나이가 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
-        if not self.condition_gender == 0:
-            if not self.agree_gender:
-                raise ValidationError("연구참여조건에 성별이 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
-        if self.reward:
-            if self.agree_email or self.agree_tel:
-                pass
-            else:
-                raise ValidationError("리워드 제공건임에도 불구하고 전화번호 혹은 이메일 수집 동의 요구를 하지 않았습니다.")
-            if not self.reward_description:
-                raise ValidationError("리워드 제공건임에도 불구하고 리워드 내용을 입력하지 않았습니다.")
+    # def clean(self):
+    #     if self.condition_age_max or self.condition_age_min:
+    #         if not self.agree_age:
+    #             raise ValidationError("연구참여조건에 나이가 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
+    #     if not self.condition_gender == 0:
+    #         if not self.agree_gender:
+    #             raise ValidationError("연구참여조건에 성별이 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
+    #     if self.reward:
+    #         if self.agree_email or self.agree_tel:
+    #             pass
+    #         else:
+    #             raise ValidationError("리워드 제공건임에도 불구하고 전화번호 혹은 이메일 수집 동의 요구를 하지 않았습니다.")
+    #         if not self.reward_description:
+    #             raise ValidationError("리워드 제공건임에도 불구하고 리워드 내용을 입력하지 않았습니다.")
 
-        super(Research, self).clean()
+        # super(Research, self).clean()
 
     @property
     def is_open(self):
@@ -71,6 +68,9 @@ class Research(models.Model):
 
 
 class Agree(models.Model):
+    class Meta:
+        verbose_name = '동의'
+        verbose_name_plural = verbose_name
     research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구', on_delete=models.PROTECT)
     item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
 
@@ -91,8 +91,15 @@ class Game(OrderedModel):
     registered_at = models.DateTimeField(auto_now_add=True)
     research = models.ForeignKey(ResearchAdminProxyForResearch, on_delete=models.PROTECT, verbose_name='연구', editable=False)
     game_title = models.CharField(max_length=300, null=False, blank=False, verbose_name='게임명')
-    game_file = models.FileField(null=False, blank=False, verbose_name='게임파일', upload_to='project/game/%Y/%m/%d')
+    game_file = models.FileField(null=False, blank=False, verbose_name='게임파일', upload_to='project/game/%Y/%m/%d',
+                                 validators=[FileExtensionValidator(allowed_extensions=['zip'])])
+    game_path = models.CharField(max_length=500, null=True, blank=True, verbose_name='게임파아리 경로', editable=False)
     order_with_respect_to = 'research'
+
+    @property
+    def _game_path(self):
+        from django.conf import settings
+        return os.path.join(settings.MEDIA_ROOT, 'games', str(self.research_id), str(self.id))
 
 
 class ResearchAdminProxy(Research):

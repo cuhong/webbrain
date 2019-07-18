@@ -65,17 +65,18 @@
                     <span style="font-size: 11pt; font-family: Nanum Gothic, sans-serif;">모든 설명을 읽고 이 연구에 참여하기로 결정하였다면 아래의 항목을 체크해 주세요.</span>
                 </p>
                 <p></p></span></span></b></p>
-                <div class="custom-control custom-checkbox">
-                    {% for agree in research.agree_set.all %}
-                        <input type="checkbox" class="custom-control-input" id="agree_{{ forloop.counter }}">
+                {% for agree in research.agree_set.all %}
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input agreeCheckbox"
+                               id="agree_{{ forloop.counter }}">
                         <label class="custom-control-label" for="agree_{{ forloop.counter }}">{{ agree.item }}</label>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
                 <p></p></span></span></b></p>
-
-                <p class="MsoNormal" align="left" style="margin-top:0cm;margin-right:.3pt; margin-bottom:0cm;margin-left:21.25pt;margin-bottom:.0001pt;text-align:left; text-indent:-21.25pt;mso-pagination:widow-orphan;mso-list:l1 level1 lfo2">
+                <p class="MsoNormal" align="left"
+                   style="margin-top:0cm;margin-right:.3pt; margin-bottom:0cm;margin-left:21.25pt;margin-bottom:.0001pt;text-align:left; text-indent:-21.25pt;mso-pagination:widow-orphan;mso-list:l1 level1 lfo2">
                     <b style="mso-bidi-font-weight:normal">
-                        <span lang="EN-US" style="font-size:11.0pt; font-family:Nanum Gothic,sans-serif;mso-bidi-font-family:Nanum Gothic; color:black">
+                        <span lang="ko" style="font-size:11.0pt; font-family:Nanum Gothic,sans-serif;mso-bidi-font-family:Nanum Gothic; color:black">
                             <span style="mso-list:Ignore">이름과 날짜를 입력해 주세요.</span>
                         </span>
                     </b>
@@ -84,8 +85,9 @@
                 <label for="name">이름</label>
                 <input type="text" id="name" class="form-control">
                 <label for="date">날짜</label>
-                <input type="date" id="date" class="form-control">
-                <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">동의</button>
+                <input type="date" id="date" class="form-control" value="">
+                <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="button" onclick="agree()">동의
+                </button>
             </div>
 
         </div>
@@ -115,6 +117,32 @@
 
 <!-- Custom scripts for this template -->
 <script src="{% static "js/freelancer.min.js" %}"></script>
+
+<script type="text/javascript">
+    function agree() {
+        var checkbox = document.getElementsByClassName('agreeCheckbox');
+        var chk = [];
+        for (var i = 0; i < checkbox.length; i++) {
+            if (checkbox[i].checked) {
+                chk.push(true)
+            } else {
+                chk.push(false)
+            }
+        }
+        var _chk = chk.every(function (element, index, array) {
+            if (element == true) {
+                return true
+            } else {
+                return false
+            }
+        });
+        if (_chk) {
+            alert('동의가 완료되었습니다. do something')
+        } else {
+            alert('모든 동의 항목에 동의해주세요.')
+        }
+    }
+</script>
 
 </body>
 

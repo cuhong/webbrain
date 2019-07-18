@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
-from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin
+from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin, OrderedInlineModelAdminMixin
 from ordered_model.models import OrderedModel
 
 from research.forms import ResearchAdminAuthenticationForm
@@ -43,7 +43,7 @@ class AgreeInlineAdmin(admin.StackedInline):
 
 
 @admin.register(ResearchAdminProxyForResearch, site=research_site)
-class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
+class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, admin.ModelAdmin):
 
     # 연구자용 연구 페이지
     list_display = ('project_title', 'user', 'status', 'link')
@@ -53,7 +53,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
     inlines = (GameInlineAdmin, AgreeInlineAdmin)
 
     def link(self, obj):
-        url = reverse('participate:index', kwargs={'research_hex': obj.hex})
+        url = reverse('participate:research', kwargs={'research_hex': obj.hex})
         full_url = ''.join(['http://', get_current_site(self.request).domain, url])
         return full_url
 
@@ -76,7 +76,6 @@ class ResearchModelAdmin(SummernoteModelAdmin, OrderedModelAdmin):
                     'project_title', 'project_description', 'project_agreement', 'project_start_date', 'tags')}),
             )
         fieldsets += (
-            ('동의조건', {'fields': ('agree_name', 'agree_tel', 'agree_gender', 'agree_email', 'agree_age')}),
             ('참여조건', {'fields': ('condition_age_min', 'condition_age_max', 'condition_gender')}),
             ('리워드', {'fields': ('reward', 'reward_description')}),
         )

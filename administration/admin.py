@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm
+from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q
+from django.urls import reverse
+from django_summernote.admin import SummernoteModelAdmin
 
 from research.models import ResearchAdminProxy
 from users.admin import BaseUserAdmin
@@ -49,7 +53,7 @@ class ResearcherUserAdmin(BaseUserAdmin):
 
     def get_queryset(self, request):
         queryset = super(ResearcherUserAdmin, self).get_queryset(request)
-        return queryset.filter(is_researcher__in=[True, False])
+        return queryset.filter(is_researcher=True)
 
 
 @admin.register(ParticipantUser, site=admin_site)
@@ -67,25 +71,37 @@ class ParticipantUserAdmin(BaseUserAdmin):
 
     def get_queryset(self, request):
         queryset = super(ParticipantUserAdmin, self).get_queryset(request)
-        return queryset.exclude(is_staff__in=[True, False])  # TODO 필터 변경
+        return queryset.exclude(Q(is_staff=True) | Q(is_researcher=True))  # TODO 필터 변경
 
 
 @admin.register(ResearchAdminProxy, site=admin_site)
-class ResearchModelAdmin(admin.ModelAdmin):
-    list_display = ('project_title', 'user', 'is_open', 'status')
+class ResearchModelAdmin(SummernoteModelAdmin, admin.ModelAdmin):
+    list_display = ('project_title', 'user', 'status', 'link')
     list_filter = ('status',)
+    readonly_fields = ('user',)
+    summernote_fields = ('project_agreement',)
     fieldsets = (
         ('기본정보', {'fields': (
-            'project_title', 'project_description', 'user', 'project_agreement', 'project_start_date',
-            'project_end_date', 'tags',
+            'project_title', 'project_description', 'user', 'project_agreement', 'project_start_date', 'tags',
             'status', )}),
-        ('동의조건', {'fields': ('agree_name', 'agree_tel', 'agree_gender', 'agree_email', 'agree_age')}),
         ('참여조건', {'fields': ('condition_age_min', 'condition_age_max', 'condition_gender')}),
         ('리워드', {'fields': ('reward', 'reward_description',)}),
     )
+
+    def link(self, obj):
+        url = reverse('participate:research', kwargs={'research_hex': obj.hex})
+        full_url = ''.join(['http://', get_current_site(self.request).domain, url])
+        return full_url
+
+    link.short_description = '연구참여주소'
 
     # readonly_fields = [field.name for field in ResearchAdminProxy._meta.fields if
     #                    field.name not in ['is_block']] + ['tags']
 
     def has_add_permission(self, request):
         return False
+
+    def get_queryset(self, request):
+        self.request = request
+        queryset = super(ResearchModelAdmin, self).get_queryset(request)
+        return queryset
