@@ -42,7 +42,7 @@ class ParticipateView(View):
                 is_continue = True
             else:
                 is_continue = False
-            start_game_id = participate_game_list.filter(is_finish=False).first().id
+            start_game_id = participate_game_list.exclude(is_finish=True).first().id
             return HttpResponseRedirect(reverse('participate:game', kwargs={'research_hex': research_hex, 'game_id': start_game_id}))
         else:
             # participate = Participate.objects.create(participant=self.request.user, research=research)

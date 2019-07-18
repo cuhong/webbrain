@@ -22,10 +22,12 @@
                         <td>완료</td>
                     </tr>
                     {% for participate in participate_list %}
+                    <tr>
                         <td>{{ participate.research.project_title }}</td>
                         <td>{{ participate.research.user }}</td>
                         <td>{{ participate.participate_at }}</td>
                         <td>{{ participate.is_finish }}</td>
+                    </tr>
                     {% endfor %}
                     </tbody>
                 </table>
