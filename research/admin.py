@@ -7,6 +7,7 @@ from ordered_model.models import OrderedModel
 
 from research.forms import ResearchAdminAuthenticationForm
 from research.models import ResearchAdminProxyForResearch, Game, Research, Agree
+from participate.models import Participate
 
 
 class ResearchAdmin(admin.AdminSite):
@@ -85,3 +86,11 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
         if not change:
             obj.user = request.user
         super(ResearchModelAdmin, self).save_model(request, obj, form, change)
+
+
+@admin.register(Participate, site=research_site)
+class ParticipateAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        self.request = request
+        queryset = super(ParticipateAdmin, self).get_queryset(request)
+        return queryset.filter(research__user=request.user)

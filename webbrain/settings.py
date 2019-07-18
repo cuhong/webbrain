@@ -30,6 +30,7 @@ JET_SIDE_MENU_ITEMS = {
     'research_admin_site': [
         {'label': '연구관리', 'items': [
             {'name': 'research.researchadminproxyforresearch', 'label': '연구'},
+            {'name': 'participate.participate', 'label': '결과'}
         ]},
     ],
     'administration_admin': [
