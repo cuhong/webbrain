@@ -96,7 +96,7 @@ class ParticipateGameListInlineAdmin(admin.TabularInline):
         JSONField: {'widget': JSONEditorWidget}
     }
     model = ParticipateGameListAdminProxy
-    readonly_fields = ['game', 'finished_dt',]
+    readonly_fields = ['game', 'finished_dt', 'result']
     extra = 0
 
     def has_delete_permission(self, request, obj=None):
