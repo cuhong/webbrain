@@ -19,6 +19,7 @@ class ResearchResultDownloadView(LoginRequiredMixin, View):
         participate_list = Participate.objects.prefetch_related('participategamelist_set', 'participategamelist_set__game').filter(research=research)
         wb = Workbook()
         ws = wb.active
+        ws.title = 'sheet1'
         for participate in participate_list:
             for participategame in participate.participategamelist_set.all():
                 result_base = [research.project_title, participate.participate_at, participate.participant.email,
@@ -28,8 +29,8 @@ class ResearchResultDownloadView(LoginRequiredMixin, View):
                                     line.get('trial_index', None),
                                     line.get('time_elapsed', None), line.get('button_pressed', None), line.get('internal_node_id', None)]
                     ws.append(result_base)
-        dirname = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT, 'cache', research_hex, "{}.xlsx".format(research_hex))
-        wb.save(dirname)
+        dirname = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT, 'cache', "{}.xlsx".format(research_hex))
+        wb.save(filename=dirname)
         return serve(request, dirname)
 
 
