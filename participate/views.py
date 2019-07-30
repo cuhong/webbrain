@@ -102,7 +102,6 @@ class ParticipantLogoutView(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse_lazy('participate:login'))
 
 
-
 class GameView(LoginRequiredMixin, View):
     def get(self, request, research_hex, game_id):
         research = get_object_or_404(Research, hex=research_hex)
@@ -111,9 +110,9 @@ class GameView(LoginRequiredMixin, View):
         if ParticipateGameList.objects.filter(Q(participate=participate) & Q(game=game)).exists():
             messages.info(request, '이미 참여한 게임입니다.')
             return HttpResponseRedirect(reverse_lazy('participate:research', kwargs={"research_hex": research_hex}))
-        data = Parser(game.exp_path)
+        data = game.game_json
         media_url = game._game_media_url
-        context = {'data': data.parsed_dict, 'media_url': media_url, 'game': game, 'research_hex': research_hex}
+        context = {'data': data, 'media_url': media_url, 'game': game, 'research_hex': research_hex}
         return render(request, template_name='game/game.html', context=context)
 
     def post(self, request, research_hex, game_id):
