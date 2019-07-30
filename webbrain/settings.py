@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'mathfilters',
     'ordered_model',
+    'django_json_widget',
     'django_summernote',
     'users.apps.UsersConfig',
     'administration.apps.AdministrationConfig',

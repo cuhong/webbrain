@@ -1,9 +1,11 @@
 from django.contrib import admin
+from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
 from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin, OrderedInlineModelAdminMixin
 from ordered_model.models import OrderedModel
+from django_json_widget.widgets import JSONEditorWidget
 
 from research.forms import ResearchAdminAuthenticationForm
 from research.models import ResearchAdminProxyForResearch, Game, Research, Agree, ParticipateAdminProxy, \
@@ -90,8 +92,12 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
 
 
 class ParticipateGameListInlineAdmin(admin.TabularInline):
+    formfield_overrides = {
+        JSONField: {'widget': JSONEditorWidget}
+    }
     model = ParticipateGameListAdminProxy
     readonly_fields = ['game', 'finished_dt', 'result']
+    extra = 0
 
     def has_delete_permission(self, request, obj=None):
         return False
