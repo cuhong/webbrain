@@ -24,8 +24,9 @@ class ResearchResultDownloadView(LoginRequiredMixin, View):
                 result_base = [research.project_title, participate.participate_at, participate.participant.email,
                           participate.participant.name, participate.agree_date, participategame.game.game_title, participategame.finished_dt]
                 for line in participategame.result:
-                    result_base += [line['rt'], line['stimulus'], line['trial_type'], line['trial_index'],
-                                    line['time_elapsed'], line['button_pressed'], line['internal_node_id']]
+                    result_base += [line.get('rt', None), line.get('stimulus', None), line.get('trial_type', None),
+                                    line.get('trial_index', None),
+                                    line.get('time_elapsed', None), line.get('button_pressed', None), line.get('internal_node_id', None)]
                     ws.append(result_base)
         dirname = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT, 'cache', '%Y', "{}.xlsx".format(research.project_title))
         wb.save(dirname)
