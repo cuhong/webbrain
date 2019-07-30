@@ -6,8 +6,9 @@ from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin, Ordered
 from ordered_model.models import OrderedModel
 
 from research.forms import ResearchAdminAuthenticationForm
-from research.models import ResearchAdminProxyForResearch, Game, Research, Agree
-from participate.models import Participate, ParticipateAdminProxy, ParticipateGameListAdminProxy
+from research.models import ResearchAdminProxyForResearch, Game, Research, Agree, ParticipateAdminProxy, \
+    ParticipateGameListAdminProxy
+from participate.models import Participate
 
 
 class ResearchAdmin(admin.AdminSite):
