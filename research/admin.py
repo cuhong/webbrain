@@ -89,10 +89,14 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
         super(ResearchModelAdmin, self).save_model(request, obj, form, change)
 
 
+class ParticipateGameListInlineAdmin(admin.TabularInline):
+    model = ParticipateGameListAdminProxy
+
 @admin.register(ParticipateAdminProxy, site=research_site)
 class ParticipateAdmin(admin.ModelAdmin):
     list_filter = ['research', 'participant', 'agree']
     list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree_date', 'agree']
+    inlines = [ParticipateGameListInlineAdmin]
 
     def get_queryset(self, request):
         self.request = request
