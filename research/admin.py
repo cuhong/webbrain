@@ -6,7 +6,8 @@ from ordered_model.admin import OrderedTabularInline, OrderedModelAdmin, Ordered
 from ordered_model.models import OrderedModel
 
 from research.forms import ResearchAdminAuthenticationForm
-from research.models import ResearchAdminProxyForResearch, Game, Research, Agree
+from research.models import ResearchAdminProxyForResearch, Game, Research, Agree, ParticipateAdminProxy, \
+    ParticipateGameListAdminProxy
 from participate.models import Participate
 
 
@@ -88,11 +89,16 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
         super(ResearchModelAdmin, self).save_model(request, obj, form, change)
 
 
-@admin.register(Participate, site=research_site)
+@admin.register(ParticipateAdminProxy, site=research_site)
 class ParticipateAdmin(admin.ModelAdmin):
-    list_display = ['research', 'participate_at', 'research', 'agree_name', 'agree_date', 'is_finish']
+    list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree_date', 'agree']
 
     def get_queryset(self, request):
         self.request = request
         queryset = super(ParticipateAdmin, self).get_queryset(request)
         return queryset.filter(research__user=request.user)
+
+
+@admin.register(ParticipateGameListAdminProxy, site=research_site)
+class ParticipateGameListAdmin(admin.ModelAdmin):
+    list_display = ['game', 'finished_at']
