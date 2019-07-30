@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
@@ -92,9 +91,6 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
 
 
 class ParticipateGameListInlineAdmin(admin.TabularInline):
-    formfield_overrides = {
-        JSONField: {'widget': JSONEditorWidget}
-    }
     model = ParticipateGameListAdminProxy
     readonly_fields = ['game', 'finished_dt', 'result']
     extra = 0
