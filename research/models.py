@@ -52,6 +52,9 @@ class Agree(models.Model):
     research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구', on_delete=models.PROTECT)
     item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
 
+    def __str__(self):
+        return self.item
+
 
 class Game(OrderedModel):
     class Meta(OrderedModel.Meta):
@@ -77,6 +80,9 @@ class Game(OrderedModel):
     @property
     def exp_path(self):
         return os.path.join(self._game_path, 'exp.txt')
+
+    def __str__(self):
+        return self.game_title
 
 
 class ResearchAdminProxyForResearch(Research):
