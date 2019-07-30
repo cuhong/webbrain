@@ -8,6 +8,9 @@ User = get_user_model()
 class Participate(models.Model):
     class Meta:
         unique_together = (('participant', 'research'))
+        verbose_name = '연구참여자'
+        verbose_name_plural = verbose_name
+
     participate_at = models.DateTimeField(auto_now_add=True, verbose_name='연구시작일시')
     participant = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, verbose_name='참가자')
     research = models.ForeignKey('research.Research', on_delete=models.CASCADE, null=False, blank=False, verbose_name='연구')
@@ -20,6 +23,8 @@ class Participate(models.Model):
 class ParticipateGameList(models.Model):
     class Meta:
         unique_together = ('participate', 'game')
+        verbose_name = '게임결과'
+        verbose_name_plural = verbose_name
 
     participate = models.ForeignKey(Participate, on_delete=models.CASCADE)
     game = models.ForeignKey('research.Game', on_delete=models.CASCADE)
