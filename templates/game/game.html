@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{{ game_title }}</title>
+    <title>{{ game.title }}</title>
     <meta charset="UTF-8">
     <script src="{% static "jspsych-6.0.5/jspsych.js" %}"></script>
     <script src="{% static "jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js" %}"></script>
@@ -23,69 +23,27 @@
     var start_time_list = [];
     var end_time_list = [];
     const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
-    timeline.push({
-        type: 'fullscreen',
-    });
-    {% if data.preseq %}
-        {% for sequence in data.preseq %}
-            {% include 'game/include/timeline.html' %}
+    {#timeline.push({#}
+    {#    type: 'fullscreen',#}
+    {#});#}
 
-
-            {% if sequence.feed_back_type is 'c' %}
-                timeline.push({
-                    type: {% include 'game/include/type_b2k.html' %},
-                    stimulus:jsPsych.data.get().last(1).values()[0].choices[jsPsych.data.get().last(1).values()[0].button_pressed],
-                {% if sequence.feed_back_duration %}
-                    trial_duration: {{ sequence.feed_back_duration }}
-                {% endif %}
-                });
-            {% elif sequence.feed_back_type is 'tf' %}
-                timeline.push({
-                    timeline: [{
-                        {% with sequence=sequence.feed_back_1 %}
-                        type: {% include 'game/include/type_b2k.html' %},
-                        stimulus: {% include 'game/include/stimulus.html' %},
-                        {% endwith %}
-                        trial_duration: {{ sequence.feed_back_duration }},
-                        }],
-                    conditional_function: function (data) {
-                        var _data = jsPsych.data.get().last(1).values()[0];
-                        return data.correct_response == data.button_pressed
-                    }
-                });
-                timeline.push({
-                    timeline: [{
-                        {% with sequence=sequence.feed_back_2 %}
-                        type: {% include 'game/include/type_b2k.html' %},
-                        stimulus: {% include 'game/include/stimulus.html' %},
-                        {% endwith %}
-                        trial_duration: {{ sequence.feed_back_duration }},
-                        }],
-                    conditional_function: function (data) {
-                        var _data = jsPsych.data.get().last(1).values()[0];
-                        return data.correct_response == data.button_pressed
-                    }
-                })
-            {% endif %}
-
-
-        {% endfor %}
-        {% for sequence in data.mainseq %}
+        {% for sequence in data.sequences.pre_sequence %}
             {% include 'game/include/timeline.html' %}
         {% endfor %}
-        {% for sequence in data.endseq %}
+        {% for sequence in data.sequences.main_sequence %}
             {% include 'game/include/timeline.html' %}
         {% endfor %}
-    {% endif %}
-{##}
-{#            {% for sequence in sequence_list %}#}
-{#                for seq in sequence_list:#}
-{#            body_string += seq.add_sequence_block() + seq.add_feedback_block()#}
-{#            {% endfor %}#}
+        {% for sequence in data.sequences.post_sequence %}
+            {% include 'game/include/timeline.html' %}
+        {% endfor %}
+
+
     timeline.push({
         type: 'html-keyboard-response',
         stimulus: function () {
-            var trials = jsPsych.data.get().filter({test_part: "test"});
+            var trials = jsPsych.data.get().filterCustom(function (data) {
+                return data.test_part === 'test';
+            });
             var rt = null;
             if (trials.count() > 0) {
                 var correct_trials = trials.filter({correct: true});
@@ -114,7 +72,24 @@
         timeline: timeline,
         show_preload_progress_bar: true,
         on_finish: function () {
-            jsPsych.data.get().localSave('csv', 'data.csv');
+            // jsPsych.data.get().localSave('csv', 'data.csv');
+            var json_result = jsPsych.data.get().json();
+            $.ajax({
+                type: "POST",
+                data: {'csrfmiddlewaretoken': '{{ csrf_token }}', 'json_result': json_result},
+                dataType: "json",
+                success: function (response) {
+                    alert(response.message);
+                    window.location.href = '{% url 'participate:research' research_hex=research_hex %}';
+                },
+                error: function (response) {
+                    alert('알 수 없는 문제가 발생했습니다.')
+                }
+            })
+
+
+
+
         }
     })
 </script>

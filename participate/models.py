@@ -20,7 +20,10 @@ class Participate(models.Model):
 
 
 class ParticipateGameList(models.Model):
+    class Meta:
+        unique_together = ('participate', 'game')
+
     participate = models.ForeignKey(Participate, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    is_finish = models.BooleanField(default=False, verbose_name='완료여부')
+    finished_dt = models.DateTimeField(auto_now_add=True, verbose_name='참여일시')
     result = JSONField(null=True, blank=True, verbose_name='결과')

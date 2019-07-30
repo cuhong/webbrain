@@ -875,7 +875,7 @@ window.jsPsych = (function() {
     for(var i=0; i<trial_parameters.length; i++){
       if(typeof trial[trial_parameters[i]] == 'undefined' || trial[trial_parameters[i]] === null){
         if(typeof jsPsych.plugins[trial.type].info.parameters[trial_parameters[i]].default == 'undefined'){
-          console.error('You must specify a value for the '+trial_parameters[i]+' parameter in the '+trial.type+' plugin.');
+          console.error('You must specify a value for the '+trial_parameters[i]+' parameter in the '+trial.type+'plugin_stimulus.htmln.');
         } else {
           trial[trial_parameters[i]] = jsPsych.plugins[trial.type].info.parameters[trial_parameters[i]].default;
         }

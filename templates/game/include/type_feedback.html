@@ -1,19 +1,19 @@
-{% if stimulus.type == 'text' %}
+{% if sequence.stimulus.type == 'text' %}
     {% if sequence.choices %}
         'html-button-response'
     {% else %}
         'html-keyboard-response'
     {% endif %}
-{% elif stimulus.type == 'text_file' %}
+{% elif sequence.stimulus.type == 'text_file' %}
     {% if sequence.choices %}
         'html-button-response'
     {% else %}
         'html-keyboard-response'
     {% endif %}
-{% elif stimulus.type == 'video' %}
+{% elif sequence.stimulus.type == 'video' %}
     'video-button-response'
-{% elif stimulus.type == 'image' %}
-        'image-button-response'
-{% elif stimulus.type == 'audio' %}
+{% elif sequence.stimulus.type == 'image' %}
+    'image-button-response'
+{% elif sequence.stimulus.type == 'audio' %}
     'audio-button-response'
 {% endif %}

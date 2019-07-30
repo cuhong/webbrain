@@ -1,0 +1,64 @@
+{% extends 'frontend/base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                {% bootstrap_messages %}
+                <h3 class="h3 mb-5">{{ research.project_title }}</h3>
+                <div class="row my-5">
+                    <div class="col-4">
+                        <h4 class="h4 mb-3">미완료한 게임</h4>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <td>게임</td>
+                                <td>참여</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for game in game_list %}
+                                {% if game in finished_game_list %}
+                                {% else %}
+                                    <tr>
+                                        <td>{{ game.game_title }}</td>
+                                        <td>
+                                            <a href="{% url 'participate:game' research_hex=research.hex game_id=game.id %}">참여하기</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-8">
+
+                        <h4 class="h4 mb-3">완료한 게임</h4>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <td>게임</td>
+                                <td>참여일시</td>
+                                <td>결과보기</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for game in participate_game_list %}
+                                <tr>
+                                    <td>{{ game.game.game_title }}</td>
+                                    <td>{{ game.finished_dt }}</td>
+                                    <td>
+                                        <a href="{% url 'participate:game_result' research_hex=research.hex game_id=game.game.id %}">결과보기</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

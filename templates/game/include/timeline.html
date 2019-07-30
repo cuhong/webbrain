@@ -1,62 +1,122 @@
 timeline.push({
-type: {% include 'game/include/type.html' %},
-stimulus: {% with stimulus=sequence.stim %}{% include 'game/include/stimulus.html' %}{% endwith %},
-{% if sequence.stimDur %}
-stimulus_duration: {{ sequence.stimDur }},
+type: {% if sequence.choices %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type.html' %}{% endwith %}{% else %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type_b2k.html' %}{% endwith %}{% endif %},
+stimulus: {% with stimulus=sequence.stimulus %}{% include 'game/include/stimulus.html' %}{% endwith %},
+
+{% if sequence.stimulus_duration %}
+    {% if sequence.stimulus.type == 'image' or sequence.stimulus.type == 'text' or sequence.stimulus.type == 'text_file' %}
+        stimulus_duration: {{ sequence.stimulus_duration }},
+    {% endif %}
 {% endif %}
-{% if sequence.reactionTime %}
-trial_duration: {{ sequence.reactionTime }},
+
+{% if sequence.reaction_time %}
+    {% if sequence.stimulus.type != 'video' %}
+        trial_duration: {{ sequence.reaction_time }},
+    {% endif %}
+{% else %}
+    {% if not sequence.choices %}
+        trial_duration: {{ sequence.stimulus_duration }},
+    {% endif %}
 {% endif %}
-{% if not sequence.choices %}
+
+{% if sequence.choices == None %}
     choices: jsPsych.NO_KEYS,
 {% else %}
     choices: [
     {% for choice in sequence.choices %}
-        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
-    {% endfor %}],
+        {% include 'game/include/stimulus_choice.html' %},
+    {% endfor %}
+    ],
 {% endif %}
+
 
 {% if sequence.answer %}
     {% if sequence.test %}
+{#         정답이 있고 / 시험인 경우#}
         data: {
-        correct_response: {{ sequence.answer_identifier }},
-        test_part: "test"
+            correct_response: {{ sequence.answer_identifier }},
+            test_part: "test",
+            on_finish: function (data) {
+                data.correct = data.button_pressed == data.correct_response;
+                var current_time = new Date();
+                end_time_list.push(current_time);
+                data.choices = [{% for choice in sequence.choices %}{% include 'game/include/stimulus_choice.html' %},{% endfor %}]
+                },
+            on_load: function (data) {
+                var current_time = new Date();
+                start_time_list.push(current_time);
+                },
         },
     {% else %}
+{#         정답이 있고 / 시험이 아닌 경우#}
         data: {
-        correct_response: {{ sequence.answer_identifier }},
+            correct_response: {{ sequence.answer_identifier }},
         },
     {% endif %}
-    {% if sequence.test %}
-        on_finish: function (data) {
-        data.correct = data.button_pressed == data.correct_response;
-        var current_time = new Date();
-        end_time_list.push(current_time);
-        data.choices = [{% for choice in sequence.choices %}
-        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
-    {% endfor %}]
-        },
-        on_load: function (data) {
-        var current_time = new Date();
-        start_time_list.push(current_time);
-        },
-    {% endif %}
-{% else %}
-    {% if sequence.test %}
+{% elif sequence.test %}
+{#         정답이 없고, 시험인 경우#}
         data: {
-        test_part: "test"
+            test_part: "test",
+            on_finish: function (data) {
+                var current_time = new Date();
+                end_time_list.push(current_time);
+                data.choices = [{% for choice in sequence.choices %}{% include 'game/include/stimulus_choice.html' %},{% endfor %}]
+                },
+            on_load: function (data) {
+                var current_time = new Date();
+                start_time_list.push(current_time);
+                },
         },
-        on_finish: function (data) {
-        var current_time = new Date();
-        end_time_list.push(current_time);
-        data.choices = [{% for choice in sequence.choices %}
-        {% with stimulus=choice %}{% include 'game/include/stimulus.html' %}{% endwith %},
-    {% endfor %}]
-        },
-        on_load: function (data) {
-        var current_time = new Date();
-        start_time_list.push(current_time);
-        },
-    {% endif %}
 {% endif %}
-});
+})
+
+{% if sequence.feedback_type == 'c' %}
+timeline.push({
+    type: {% include 'game/include/type_b2k.html' %},
+    stimulus: jsPsych.data.get().last(1).values()[0].choices[jsPsych.data.get().last(1).values()[0].button_pressed],
+    {% if sequence.feedback_duration %}
+    trial_duration: {{ sequence.feedback_duration }}
+    {% endif %}
+})
+{% elif sequence.feedback_type == 'a' %}
+timeline.push({
+    type: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
+    stimulus: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    {% if sequence.feedback_duration %}
+    trial_duration: {{ sequence.feedback_duration }}
+    {% endif %}
+})
+{% elif sequence.feedback_type == 'tf' %}
+timeline.push({
+    timeline: [{
+        type: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
+        stimulus: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/stimulus.html' %}{% endwith %},
+        trial_duration: {{ sequence.feedback_duration }}
+    }],
+    conditional_function: function (data) {
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.correct_response == data.button_pressed) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+})
+timeline.push({
+    timeline: [{
+        type: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
+        stimulus: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/stimulus.html' %}{% endwith %},
+        trial_duration: {{ sequence.feedback_duration }}
+    }],
+    conditional_function: function (data) {
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.correct_response == data.button_pressed) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+})
+{% endif %}
+
+
+{#{% if sequence.feedback_type %}#}

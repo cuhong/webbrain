@@ -1,14 +1,14 @@
 import os
 import uuid
 
-from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import JSONField
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.utils import timezone
 from ordered_model.models import OrderedModel
 from taggit.managers import TaggableManager
 
 from users.models import CustomUser
+
 
 def uuid_hex():
     u = uuid.uuid4()
@@ -42,45 +42,14 @@ class Research(models.Model):
     def __str__(self):
         return self.project_title
 
-    # def clean(self):
-    #     if self.condition_age_max or self.condition_age_min:
-    #         if not self.agree_age:
-    #             raise ValidationError("연구참여조건에 나이가 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
-    #     if not self.condition_gender == 0:
-    #         if not self.agree_gender:
-    #             raise ValidationError("연구참여조건에 성별이 있으나 개인정보 수집 동의 요구를 하지 않았습니다.")
-    #     if self.reward:
-    #         if self.agree_email or self.agree_tel:
-    #             pass
-    #         else:
-    #             raise ValidationError("리워드 제공건임에도 불구하고 전화번호 혹은 이메일 수집 동의 요구를 하지 않았습니다.")
-    #         if not self.reward_description:
-    #             raise ValidationError("리워드 제공건임에도 불구하고 리워드 내용을 입력하지 않았습니다.")
-
-        # super(Research, self).clean()
-
-    @property
-    def is_open(self):
-        """
-        연구의 승인여부와, 시작/종료일 확인 후 True/False 반환
-        """
-        return self.status == 2
-
 
 class Agree(models.Model):
     class Meta:
         verbose_name = '동의'
         verbose_name_plural = verbose_name
+
     research = models.ForeignKey(Research, null=False, blank=False, verbose_name='연구', on_delete=models.PROTECT)
     item = models.CharField(max_length=300, null=False, blank=False, verbose_name='동의 조건')
-
-
-class ResearchAdminProxyForResearch(Research):
-    # 연구원 페이지용 research 모델 proxy
-    class Meta:
-        verbose_name = '연구'
-        verbose_name_plural = '연구'
-        proxy = True
 
 
 class Game(OrderedModel):
@@ -89,21 +58,28 @@ class Game(OrderedModel):
 
     order = models.PositiveIntegerField(verbose_name='순서', editable=False, db_index=True)
     registered_at = models.DateTimeField(auto_now_add=True)
-    research = models.ForeignKey(ResearchAdminProxyForResearch, on_delete=models.PROTECT, verbose_name='연구', editable=False)
+    research = models.ForeignKey(Research, on_delete=models.PROTECT, verbose_name='연구', editable=False)
     game_title = models.CharField(max_length=300, null=False, blank=False, verbose_name='게임명')
     game_file = models.FileField(null=False, blank=False, verbose_name='게임파일', upload_to='project/game/%Y/%m/%d',
                                  validators=[FileExtensionValidator(allowed_extensions=['zip'])])
-    game_path = models.CharField(max_length=500, null=True, blank=True, verbose_name='게임파아리 경로', editable=False)
+    game_json = JSONField(null=True, blank=True, verbose_name='게임 json')
     order_with_respect_to = 'research'
 
     @property
     def _game_path(self):
-        from django.conf import settings
-        return os.path.join(settings.MEDIA_ROOT, 'games', str(self.research_id), str(self.id))
+        return self.game_file.path.split('.')[0]
+
+    @property
+    def _game_media_url(self):
+        return self.game_file.url[0:self.game_file.url.rfind('.')]
+
+    @property
+    def exp_path(self):
+        return os.path.join(self._game_path, 'exp.txt')
 
 
-class ResearchAdminProxy(Research):
-    # 관리자 페이지용 research 모델 proxy
+class ResearchAdminProxyForResearch(Research):
+    # 연구원 페이지용 research 모델 proxy
     class Meta:
         verbose_name = '연구'
         verbose_name_plural = '연구'

@@ -1,0 +1,8 @@
+{# TODO text file은 어떻게 읽을것인가!#}
+{% if choice.type == 'text' %}
+    '<p style="{% if choice.font_size %}font_size:{{ choice.font_size }}; {% endif %}{% if choice.font_color %}font_color:{{ choice.font_color }}{% endif %}">{{ choice.body }}</p>'
+{% elif choice.type == 'text_file' %}
+    '<p style="{% if choice.font_size %}font_size:{{ choice.font_size }}; {% endif %}{% if choice.font_color %}font_color:{{ choice.font_color }}{% endif %}">{{ choice.body }}</p>'
+{% else %}
+    '<img src="{{ media_url }}/{{ choice.body }}">'
+{% endif %}

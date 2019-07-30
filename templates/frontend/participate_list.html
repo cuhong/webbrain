@@ -12,6 +12,7 @@
                         <td>연구자</td>
                         <td>참여일시</td>
                         <td>완료</td>
+                        <td>자세히보기</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -21,6 +22,7 @@
                             <td>{{ participate.research.user }}</td>
                             <td>{{ participate.participate_at }}</td>
                             <td>{{ participate.is_finish }}</td>
+                            <td><a href="{% url 'participate:research' research_hex=participate.research.hex %}">자세히보기</a> </td>
                         </tr>
                     {% endfor %}
                     </tbody>

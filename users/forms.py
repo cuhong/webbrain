@@ -1,7 +1,15 @@
+from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 
+User = get_user_model()
+
+
 class CustomParticipantUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('email', 'name')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -34,3 +42,9 @@ class CustomResearcherUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class CustomLoginView(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'password']

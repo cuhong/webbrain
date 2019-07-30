@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
 
-from research.models import ResearchAdminProxy
+from administration.models import ResearchAdminProxy
 from users.admin import BaseUserAdmin
 from users.forms import CustomParticipantUserCreationForm, CustomStaffUserCreationForm, CustomResearcherUserCreationForm
 from users.models import StaffUser, ResearcherUser, ParticipantUser

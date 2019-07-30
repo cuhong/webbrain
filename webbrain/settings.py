@@ -16,6 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taggit',
+    'bootstrap4',
+    'mathfilters',
     'ordered_model',
     'django_summernote',
     'users.apps.UsersConfig',
@@ -76,13 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webbrain.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -132,3 +127,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SUMMERNOTE_THEME = 'lite'
+
+LOGIN_REDIRECT_URL = '/'
