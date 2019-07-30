@@ -87,17 +87,3 @@ class ResearchAdminProxyForResearch(Research):
         proxy = True
 
 
-class ParticipateAdminProxy(Participate):
-    # 연구원 페이지용 Participate 모델 proxy
-    class Meta:
-        verbose_name = '연구참여자'
-        verbose_name_plural = '연구참여자'
-        proxy = True
-
-
-class ParticipateGameListAdminProxy(ParticipateGameList):
-    # 연구원 페이지용 ParticipateGameList 모델 proxy
-    class Meta:
-        verbose_name = '게임결과'
-        verbose_name_plural = '게임결과'
-        proxy = True
