@@ -55,14 +55,14 @@
                 console.log(rt);
                 /* yumin accuracy */
                 return "<p>You responded correctly on " + accuracy + "% of the trials.</p>" +
-                    "<p>Your average response time was " + average(rt) / 1000 + "s.</p>";
+                    "<p>Your average response time was " + average(rt) / 1000 + "s.</p><p>아무 키나 누르세요.</p>";
             } else {
                 rt = trials.select('rt').values;
                 console.log(start_time_list);
                 console.log(end_time_list);
                 console.log(rt);
                 /* yumin no accuracy */
-                return "<p>Your average response time was " + average(rt) / 1000 + "s.</p>";
+                return "<p>Your average response time was " + average(rt) / 1000 + "s.</p><p>아무 키나 누르세요.</p>";
             }
         },
         trial_duration: 10000,
@@ -86,10 +86,6 @@
                     alert('알 수 없는 문제가 발생했습니다.')
                 }
             })
-
-
-
-
         }
     })
 </script>
