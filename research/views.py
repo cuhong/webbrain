@@ -28,7 +28,7 @@ class ResearchResultDownloadView(LoginRequiredMixin, View):
                                     line.get('trial_index', None),
                                     line.get('time_elapsed', None), line.get('button_pressed', None), line.get('internal_node_id', None)]
                     ws.append(result_base)
-        dirname = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT, 'cache', '%Y', "{}.xlsx".format(research.project_title))
+        dirname = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT, 'cache', research_hex, "{}.xlsx".format(research_hex))
         wb.save(dirname)
         return serve(request, dirname)
 
