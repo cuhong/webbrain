@@ -69,10 +69,6 @@ class ParticipantUserAdmin(BaseUserAdmin):
         readonly_fields = super(ParticipantUserAdmin, self).get_readonly_fields(request, obj)
         return readonly_fields
 
-    def get_queryset(self, request):
-        queryset = super(ParticipantUserAdmin, self).get_queryset(request)
-        return queryset.exclude(Q(is_staff=True) | Q(is_researcher=True))  # TODO 필터 변경
-
 
 @admin.register(ResearchAdminProxy, site=admin_site)
 class ResearchModelAdmin(SummernoteModelAdmin, admin.ModelAdmin):
