@@ -91,7 +91,7 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
 
 class ParticipateGameListInlineAdmin(admin.TabularInline):
     model = ParticipateGameListAdminProxy
-    readonly_fields = ['game', 'finished_at', 'result']
+    readonly_fields = ['game', 'finished_dt', 'result']
 
     def has_delete_permission(self, request, obj=None):
         return False
