@@ -27,7 +27,7 @@ class ParticipateGameList(models.Model):
         verbose_name_plural = verbose_name
 
     participate = models.ForeignKey(Participate, on_delete=models.CASCADE)
-    game = models.ForeignKey('research.Game', on_delete=models.CASCADE)
+    game = models.ForeignKey('research.Game', on_delete=models.CASCADE, verbose_name='게임')
     finished_dt = models.DateTimeField(auto_now_add=True, verbose_name='참여일시')
     result = JSONField(null=True, blank=True, verbose_name='결과')
 
