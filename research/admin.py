@@ -100,4 +100,4 @@ class ParticipateAdmin(admin.ModelAdmin):
 
 @admin.register(ParticipateGameListAdminProxy, site=research_site)
 class ParticipateGameListAdmin(admin.ModelAdmin):
-    list_display = ['game', 'finished_at']
+    list_display = ['game', 'finished_dt']
