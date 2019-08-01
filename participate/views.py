@@ -14,7 +14,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from participate.forms import ResearchAgreeForm
-from participate.models import Participate, ParticipateGameList
+from participate.models import Participate, ParticipateGameList, MainPage
 from research.models import Research, Game
 
 from research.parsers import Parser
@@ -24,6 +24,11 @@ from django.contrib.auth import views as auth_views
 
 class IndexView(TemplateView):
     template_name = 'frontend/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page'] = MainPage.objects.get()
+        return context
 
 
 class ParticipateListView(LoginRequiredMixin, TemplateView):

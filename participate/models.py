@@ -1,8 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from solo.models import SingletonModel
 
 User = get_user_model()
+
+
+class MainPage(SingletonModel):
+    modified_at = models.DateTimeField(auto_now=True, verbose_name='최종 수정일')
+    doc = models.TextField(null=True, blank=True, verbose_name='메인페이지')
+
+    def __str__(self):
+        return '메인페이지'
+
+    class Meta:
+        verbose_name = 'main page'
 
 
 class Participate(models.Model):

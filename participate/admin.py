@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from participate.models import MainPage
+
+
+mainpage = MainPage.get_solo()

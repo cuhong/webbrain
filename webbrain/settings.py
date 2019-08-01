@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'ordered_model',
     'django_json_widget',
     'django_summernote',
+    'solo',
     'users.apps.UsersConfig',
     'administration.apps.AdministrationConfig',
     'research.apps.ResearchConfig',
@@ -33,10 +34,13 @@ JET_SIDE_MENU_ITEMS = {
     'research_admin_site': [
         {'label': '연구관리', 'items': [
             {'name': 'research.researchadminproxyforresearch', 'label': '연구'},
-            {'name': 'research.participateadminproxy', 'label': '결과'}
+            {'name': 'admin.participateadminproxy', 'label': '결과'}
         ]},
     ],
     'administration_admin': [
+        {'label': '디자인관리', 'items': [
+            {'name': 'fr'}
+        ]},
         {'label': '사용자관리', 'items': [
             {'name': 'users.researcheruser', 'label': '연구자'},
             {'name': 'users.staffuser', 'label': '관리자'},
