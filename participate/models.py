@@ -12,9 +12,9 @@ class MainPage(SingletonModel):
 
     def __str__(self):
         return '메인페이지'
-
     class Meta:
         verbose_name = 'main page'
+
 
 
 class Participate(models.Model):
