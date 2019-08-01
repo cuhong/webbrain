@@ -38,9 +38,9 @@ JET_SIDE_MENU_ITEMS = {
         ]},
     ],
     'administration_admin': [
-        {'label': '디자인관리', 'items': [
-            {'name': 'fr'}
-        ]},
+        # {'label': '디자인관리', 'items': [
+        #     {'name': 'fr'}
+        # ]},
         {'label': '사용자관리', 'items': [
             {'name': 'users.researcheruser', 'label': '연구자'},
             {'name': 'users.staffuser', 'label': '관리자'},
