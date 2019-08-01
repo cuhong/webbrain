@@ -42,31 +42,28 @@ class ResearchView(LoginRequiredMixin, View):
 
     def get(self, request, research_hex):
         research = get_object_or_404(Research.objects.prefetch_related('game_set'), hex=research_hex)
-        try:
-            _participate = Participate.objects.get(Q(participant=self.request.user) & Q(research=research))
-        except Participate.DoesNotExist:
-            _participate = Participate.objects.create(participant=self.request.user, research=research)
+        _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
 
         if _participate.agree:
-            game_list = research.game_set.all()
-            participate_game_list = ParticipateGameList.objects.select_related('game')
-            finished_game_list = [participate.game for participate in participate_game_list.filter(participate=_participate)]
-            return render(request, 'frontend/game_list.html', context={'research': research, 'game_list': game_list,
-                                                                       'finished_game_list': finished_game_list,
-                                                                       'participate_game_list': participate_game_list})
+            participated_game_list = ParticipateGameList.objects.select_related('game').filter(participate=_participate)
+            unparticipated_game_list = research.game_set.exclude(id__in=[p.game.id for p in participated_game_list])
+
+            return render(request, 'frontend/game_list.html', context={'research': research,
+                                                                       'participated_game_list': participated_game_list,
+                                                                       'unparticipated_game_list': unparticipated_game_list})
         else:
-            return render(request, 'frontend/agree.html', context={'research': research})
+            form = ResearchAgreeForm(instance=_participate)
+            return render(request, 'frontend/agree.html', context={'research': research, 'form': form})
 
     def post(self, request, research_hex):
         research = get_object_or_404(Research, hex=research_hex)
-        form = ResearchAgreeForm(request.POST)
+        participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research))
+        form = ResearchAgreeForm(request.POST, instance=participate)
         if form.is_valid():
             data = form.cleaned_data
-            participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research))
-            participate.agree = True
-            participate.agree_name = data['name']
-            participate.agree_date = data['date']
-            participate.save()
+            _participate = form.save(commit=False)
+            _participate.agree = True
+            _participate.save()
             return HttpResponseRedirect(reverse('participate:research', kwargs={'research_hex': research_hex}))
         else:
             print(form.errors)
@@ -135,7 +132,8 @@ class GameResultView(LoginRequiredMixin, View):
         participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
         game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
         result = get_object_or_404(ParticipateGameList, Q(participate=participate) & Q(game=game))
-        context = {'result': result, 'research': research}
+
+        context = {'result': result, 'research': research, 'finished_dt': result.finished_dt, 'score': result.calculate_score()}
         return render(request, template_name='frontend/game_result.html', context=context)
 
 

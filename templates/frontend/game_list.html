@@ -19,7 +19,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for game in game_list %}
+                            {% for game in unparticipated_game_list %}
                                 {% if game in finished_game_list %}
                                 {% else %}
                                     <tr>
@@ -45,7 +45,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for game in participate_game_list %}
+                            {% for game in participated_game_list %}
                                 <tr>
                                     <td>{{ game.game.game_title }}</td>
                                     <td>{{ game.finished_dt }}</td>

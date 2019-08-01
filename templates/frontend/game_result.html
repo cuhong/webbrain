@@ -14,24 +14,23 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <td>질문</td>
-                                <td>답변</td>
-                                <td>응답소요시간(초)</td>
+                                <td>평균응답시간</td>
+                                <td>점수</td>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for line in result.result %}
                                 <tr>
-                                <td>{% if 'html' in line.trial_type %}{% autoescape off %}{{ line.stimulus }}{% endautoescape %}{% else %}<img style="width: 100%" src="{{ line.stimulus }}">{% endif %}</td>
-                                <td>{{ line.button_pressed }}</td>
-                                <td>{{ line.rt|default_if_none:'-'|div:1000 }}</td>
+                                <td>{{ score.avg_rt|floatformat:2 }} 초</td>
+                                <td>문제 {{ score.score.count }}개 중 {{ score.score.correct }}개 정답</td>
                                 </tr>
-                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row justify-content-center">
+            <button class="btn btn-primary" onclick="location.href='{% url 'participate:research' research_hex=research.hex %}'">다른 게임 하기</button>
         </div>
     </div>
 {% endblock %}

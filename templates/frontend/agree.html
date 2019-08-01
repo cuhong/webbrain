@@ -1,4 +1,5 @@
 {% extends 'frontend/base.html' %}
+{% load bootstrap4 %}
 
 {% block content %}
     <div class="container mb-5">
@@ -32,10 +33,11 @@
             <div class="col-6">
                 <form id="agreeSign" method="post" novalidate>
                     {% csrf_token %}
-                    <label for="name">이름</label>
-                    <input type="text" id="name" name="name" class="form-control">
-                    <label for="date">날짜</label>
-                    <input type="date" id="date" name="date" class="form-control">
+{#                    <label for="name">이름</label>#}
+{#                    <input type="text" id="name" name="name" class="form-control">#}
+{#                    <label for="date">날짜</label>#}
+{#                    <input type="date" id="date" name="date" class="form-control">#}
+                    {% bootstrap_form form %}
                     <button class="btn btn-primary btn-rounded btn-block my-4" type="button"
                             onclick="agree()">동의하고 연구 참여
                 </form>
@@ -69,13 +71,21 @@
 
         function nameDate() {
             var form = document.getElementById('agreeSign');
-            var name = document.getElementById('name');
-            var date = document.getElementById('date');
+            var name = document.getElementById('id_agree_name');
+            var date = document.getElementById('id_date');
             var chk = [];
-            if (name.value == "") {chk.push(false)} else {chk.push(true)};
-            if (name.date == "") {chk.push(false)} else {chk.push(true)};
+            if (name.value === "") {
+                chk.push(false)
+            } else {
+                chk.push(true)
+            }
+            if (name.date === "") {
+                chk.push(false)
+            } else {
+                chk.push(true)
+            }
             var _chk = chk.every(function (element, index, array) {
-                if (element == true) {
+                if (element === true) {
                     return true
                 } else {
                     return false
