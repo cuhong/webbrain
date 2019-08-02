@@ -39,7 +39,7 @@ JET_SIDE_MENU_ITEMS = {
     ],
     'administration_admin': [
         {'label': '디자인관리', 'items': [
-            {'name': 'participate.mainpage'}
+            {'name': 'participate.mainpage', 'label': '메인페이지'}
         ]},
         {'label': '사용자관리', 'items': [
             {'name': 'users.researcheruser', 'label': '연구자'},
