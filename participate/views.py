@@ -14,7 +14,8 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from participate.forms import ResearchAgreeForm
-from participate.models import Participate, ParticipateGameList, MainPage
+from participate.models import Participate, ParticipateGameList
+from administration.models import MainPage
 from research.models import Research, Game
 
 from research.parsers import Parser
