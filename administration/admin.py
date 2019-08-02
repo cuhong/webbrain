@@ -105,6 +105,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, admin.ModelAdmin):
         return queryset
 
 
-mainpage = MainPage.get_solo()
 
-admin_site.register(mainpage, SingletonModelAdmin)
+admin_site.register(MainPage, SingletonModelAdmin)
+
+mainpage = MainPage.get_solo()
