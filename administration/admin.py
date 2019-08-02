@@ -7,7 +7,7 @@ from django_summernote.admin import SummernoteModelAdmin
 from solo.admin import SingletonModelAdmin
 
 from administration.models import ResearchAdminProxy
-from participate.models import MainPage
+from administration.models import MainPage
 from users.admin import BaseUserAdmin
 from users.forms import CustomParticipantUserCreationForm, CustomStaffUserCreationForm, CustomResearcherUserCreationForm
 from users.models import StaffUser, ResearcherUser, ParticipantUser
