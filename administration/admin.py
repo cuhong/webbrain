@@ -107,6 +107,7 @@ class ResearchModelAdmin(SummernoteModelAdmin, admin.ModelAdmin):
 
 
 @admin.register(MainPage, site=admin_site)
-class MainPageAdmin(SingletonModelAdmin, SingletonModelAdmin)
+class MainPageAdmin(SummernoteModelAdmin, SingletonModelAdmin):
+    pass
 
 mainpage = MainPage.get_solo()
