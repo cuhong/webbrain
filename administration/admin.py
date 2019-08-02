@@ -4,8 +4,10 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
 from django.urls import reverse
 from django_summernote.admin import SummernoteModelAdmin
+from solo.admin import SingletonModelAdmin
 
 from administration.models import ResearchAdminProxy
+from participate.models import MainPage
 from users.admin import BaseUserAdmin
 from users.forms import CustomParticipantUserCreationForm, CustomStaffUserCreationForm, CustomResearcherUserCreationForm
 from users.models import StaffUser, ResearcherUser, ParticipantUser
@@ -101,3 +103,8 @@ class ResearchModelAdmin(SummernoteModelAdmin, admin.ModelAdmin):
         self.request = request
         queryset = super(ResearchModelAdmin, self).get_queryset(request)
         return queryset
+
+
+mainpage = MainPage.get_solo()
+
+admin_site.register(mainpage, SingletonModelAdmin)
