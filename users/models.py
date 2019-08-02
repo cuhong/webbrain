@@ -1,6 +1,10 @@
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin, AbstractUser
+from django.contrib.auth.models import PermissionsMixin, AbstractUser, Permission
 from django.db import models
+from django.db.models import Q
+
+
+
 
 
 class CustomUserManager(BaseUserManager):
@@ -62,7 +66,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('name', )
+    REQUIRED_FIELDS = ('name',)
 
     def get_full_name(self):
         return self.name
@@ -86,7 +90,6 @@ class ResearcherUser(CustomUser):
         verbose_name = '연구자'
         verbose_name_plural = verbose_name
         proxy = True
-
 
 class ParticipantUser(CustomUser):
     class Meta:

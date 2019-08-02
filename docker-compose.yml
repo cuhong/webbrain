@@ -17,7 +17,7 @@ services:
 # daemon 실행 : docker-compose up -d
 # 로그 확인 : docker logs -f webrain
 # psql : docker exec -it webrain -d web -U webrain
-# database 생성 : docker exec -it webrain -U webrain -c "create database web"
+# database 생성 : docker exec -it postgres -U webrain -c "create database temp"
 
 # callcarm 유저 생성 > CREATE USER itechs WITH PASSWORD 'dkdlxldptm1!'
 # callcrm database 생성 > CREATE DATABASE cardata

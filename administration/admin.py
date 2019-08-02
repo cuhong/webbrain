@@ -11,6 +11,7 @@ from administration.models import MainPage
 from users.admin import BaseUserAdmin
 from users.forms import CustomParticipantUserCreationForm, CustomStaffUserCreationForm, CustomResearcherUserCreationForm
 from users.models import StaffUser, ResearcherUser, ParticipantUser
+from users.signals import set_permission
 
 
 class AdminisitrationAdmin(admin.AdminSite):
@@ -32,12 +33,16 @@ class StaffUserAdmin(BaseUserAdmin):
     add_fieldsets = ((None, {'fields': ('email', 'name', 'password1', 'password2', 'is_superuser')}),)
     fieldsets = (
         ('기본정보', {'fields': ('email', 'name', 'is_active', 'date_joined')}),
-        ('권한정보', {'fields': ('is_staff',)})
+        ('권한정보', {'fields': ('is_staff', 'is_researcher', 'is_researcher_accepted_at', 'groups', 'user_permissions')})
     )
 
     def get_queryset(self, request):
         queryset = super(StaffUserAdmin, self).get_queryset(request)
         return queryset.filter(is_staff=True)
+
+    def save_model(self, request, obj, form, change):
+        set_permission(obj)
+        return super(StaffUserAdmin, self).save_model(request, obj, form, change)
 
 
 @admin.register(ResearcherUser, site=admin_site)
@@ -50,12 +55,16 @@ class ResearcherUserAdmin(BaseUserAdmin):
     add_fieldsets = ((None, {'fields': ('email', 'name', 'password1', 'password2')}),)
     fieldsets = (
         ('기본정보', {'fields': ('email', 'name', 'is_active', 'date_joined')}),
-        ('권한정보', {'fields': ('is_researcher', 'is_researcher_accepted_at', 'groups', 'user_permissions')})
+        ('권한정보', {'fields': ('is_staff', 'is_researcher', 'is_researcher_accepted_at', 'groups', 'user_permissions')})
     )
 
     def get_queryset(self, request):
         queryset = super(ResearcherUserAdmin, self).get_queryset(request)
         return queryset.filter(is_researcher=True)
+
+    def save_model(self, request, obj, form, change):
+        set_permission(obj)
+        return super(ResearcherUserAdmin, self).save_model(request, obj, form, change)
 
 
 @admin.register(ParticipantUser, site=admin_site)
@@ -65,11 +74,18 @@ class ParticipantUserAdmin(BaseUserAdmin):
     list_display = ('email', 'name', 'date_joined',)
     list_filter = ()
     exclude = ('username',)
-    add_fieldsets = ((None, {'fields': ('email', 'name', 'password1', 'password2')}),)
+    fieldsets = (
+        ('기본정보', {'fields': ('email', 'name', 'is_active', 'date_joined')}),
+        ('권한정보', {'fields': ('is_staff', 'is_researcher', 'is_researcher_accepted_at', 'groups', 'user_permissions')})
+    )
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super(ParticipantUserAdmin, self).get_readonly_fields(request, obj)
         return readonly_fields
+
+    def save_model(self, request, obj, form, change):
+        set_permission(obj)
+        return super(ParticipantUserAdmin, self).save_model(request, obj, form, change)
 
 
 @admin.register(ResearchAdminProxy, site=admin_site)
