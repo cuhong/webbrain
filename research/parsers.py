@@ -101,7 +101,7 @@ class Parser():
         for type_str in sequence_type_list:
             _temp_sequence_list = self.sectioned_string['sequences'].get(type_str)
             sequence_list = []
-            if _temp_sequence_list is not None:
+            if _temp_sequence_list:
                 for _temp_sequence in _temp_sequence_list:
                     sequence = {'onSetTime': None, 'identifier': None, 'stimulus': None, 'stimulus_duration': None, 'choices': None, 'choice_duration': None,
                                 'answer': None, 'choiceOnsetRelativeToSim': None, 'reaction_time': None, 'feedback_type': None,
@@ -114,7 +114,7 @@ class Parser():
                     sequence['choices'] = None if splitted_sequence[3] == 'n' else [self.parsed_dict['stimulus'][key] for key in temp_choice_list]
                     sequence['choice_duration'] = None if splitted_sequence[4] == 'inf' else int(splitted_sequence[4])
 
-                    sequence['answer'] = None if splitted_sequence[5] == 'n' else self.parsed_dict['stimulus'][temp_choice_list[int(splitted_sequence[5])]]
+                    sequence['answer'] = None if splitted_sequence[5].strip() == 'n' else self.parsed_dict['stimulus'].get(temp_choice_list[int(splitted_sequence[5])], None)
                     sequence['answer_identifier'] = None if splitted_sequence[5] == 'n' else int(splitted_sequence[5])
 
                     sequence['choiceOnsetRelativeToSim'] = None if splitted_sequence[6] == 'n' else splitted_sequence[6]
