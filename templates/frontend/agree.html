@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% block extrahead %}
 
-                    {{ form.media }}
+    {{ form.media }}
 {% endblock %}
 {% block content %}
     <div class="container mb-5">
@@ -36,8 +36,9 @@
             <div class="col-6">
                 <form id="agreeSign" method="post" novalidate>
                     {% csrf_token %}
-                    {% bootstrap_field form.agree_name %}
-                    {{ form.agree_date }}
+{#                    {% bootstrap_field form.agree_name %}#}
+{#                    {{ form.agree_date }}#}
+                    {{ form }}
                     <button class="btn btn-primary btn-rounded btn-block my-4" type="button"
                             onclick="agree()">동의하고 연구 참여
                 </form>
