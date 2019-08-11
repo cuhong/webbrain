@@ -39,32 +39,9 @@
 
 
     timeline.push({
-        type: 'html-keyboard-response',
-        stimulus: function () {
-            var trials = jsPsych.data.get().filterCustom(function (data) {
-                return data.test_part === 'test';
-            });
-            var rt = null;
-            if (trials.count() > 0) {
-                var correct_trials = trials.filter({correct: true});
-                var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-                rt = trials.select('rt').values;
-                console.log(accuracy);
-                console.log(start_time_list);
-                console.log(end_time_list);
-                console.log(rt);
-                /* yumin accuracy */
-                return "</p><p>아무 키나 누르세요.</p>";
-            } else {
-                rt = trials.select('rt').values;
-                console.log(start_time_list);
-                console.log(end_time_list);
-                console.log(rt);
-                /* yumin no accuracy */
-                return "</p><p>아무 키나 누르세요.</p>";
-            }
-        },
-        trial_duration: 10000,
+        type: 'html-button-response',
+        stimulus: "<p>결과를 확인해보세요.</p>",
+        choices: ['결과보기'],
     });
 
     jsPsych.init({
