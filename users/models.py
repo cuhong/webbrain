@@ -4,9 +4,6 @@ from django.db import models
 from django.db.models import Q
 
 
-
-
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, password=None):
         if not email:
@@ -91,8 +88,14 @@ class ResearcherUser(CustomUser):
         verbose_name_plural = verbose_name
         proxy = True
 
+
 class ParticipantUser(CustomUser):
     class Meta:
         verbose_name = '참여자'
         verbose_name_plural = verbose_name
         proxy = True
+
+
+class Visitor(models.Model):
+    user = models.OneToOneField(CustomUser, null=False, related_name='visitor', on_delete=models.CASCADE)
+    session_key = models.CharField(null=False, max_length=40)

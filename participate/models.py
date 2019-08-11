@@ -25,7 +25,6 @@ class Participate(models.Model):
 
 class ParticipateGameList(models.Model):
     class Meta:
-        unique_together = ('participate', 'game')
         verbose_name = '게임결과'
         verbose_name_plural = verbose_name
 

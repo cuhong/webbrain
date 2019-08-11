@@ -51,7 +51,7 @@ class ResearchView(LoginRequiredMixin, View):
         _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
 
         if _participate.agree:
-            participated_game_list = ParticipateGameList.objects.select_related('game').filter(Q(participate=_participate))
+            participated_game_list = ParticipateGameList.objects.select_related('game').filter(Q(participate=_participate)).distinct('game_id')
             unparticipated_game_list = research.game_set.filter(Q(parse_result=True) & ~Q(id__in=[p.game.id for p in participated_game_list]))
 
             return render(request, 'frontend/game_list.html', context={'research': research,
@@ -132,14 +132,33 @@ class GameView(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(context), content_type='application/json')
 
 
+class GameRetestView(LoginRequiredMixin, View):
+    def get(self, request, research_hex, game_id):
+        research = get_object_or_404(Research, hex=research_hex)
+        game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
+        data = game.game_json
+        media_url = game._game_media_url
+        context = {'data': data, 'media_url': media_url, 'game': game, 'research_hex': research_hex}
+        return render(request, template_name='game/game.html', context=context)
+
+    def post(self, request, research_hex, game_id):
+        research = get_object_or_404(Research, hex=research_hex)
+        game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
+        participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research))
+        json_data = request.POST.get('json_result')
+        data = json.loads(json_data)
+        ParticipateGameList.objects.create(participate=participate, game=game, result=data)
+        context = {'result': True, 'message': '게임 결과가 전송되었습니다.'}
+        return HttpResponse(json.dumps(context), content_type='application/json')
+
+
 class GameResultView(LoginRequiredMixin, View):
     def get(self, request, research_hex, game_id):
         research = get_object_or_404(Research, Q(hex=research_hex))
         participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
         game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
-        result = get_object_or_404(ParticipateGameList, Q(participate=participate) & Q(game=game))
-
-        context = {'result': result, 'research': research, 'finished_dt': result.finished_dt, 'score': result.calculate_score()}
+        result_list = ParticipateGameList.objects.filter(Q(participate=participate) & Q(game=game))
+        context = {'result_list': result_list, 'research': research,}
         return render(request, template_name='frontend/game_result.html', context=context)
 
 

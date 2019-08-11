@@ -42,6 +42,7 @@
                                 <td>게임</td>
                                 <td>참여일시</td>
                                 <td>결과보기</td>
+                                <td>다시하기</td>
                             </tr>
                             </thead>
                             <tbody>
@@ -52,6 +53,9 @@
                                     <td>
                                         <a href="{% url 'participate:game_result' research_hex=research.hex game_id=game.game.id %}">결과보기</a>
                                     </td>
+                                <td>
+                                        <a href="{% url 'participate:game_re' research_hex=research.hex game_id=game.game.id %}">다시하기</a>
+                                </td>
                                 </tr>
                             {% endfor %}
                             </tbody>

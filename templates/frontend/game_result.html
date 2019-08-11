@@ -11,34 +11,37 @@
                 <div class="row my-5">
                     <div class="col-12 text-center">
                         <h4 class="h4 mb-1">{{ result.game.game_title }}</h4>
-                        <h4 class="h6 mb-5">완료일시 : {{ result.finished_dt|date:"Y년 m월 d일 H시 i분" }}</h4>
-                        <div class="row justify-content-center">
-                            <div class="col-6 text-center">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <td>항목</td>
-                                        <td>점수</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% if score.avg_rt > 0 %}
-                                    <tr>
-                                        <td>평균응답시간</td>
-                                        <td>{{ score.avg_rt|floatformat:2 }} 초</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if score.score.count != 0 %}
-                                    <tr>
-                                        <td>정답률</td>
-                                        <td>{{ score.score.correct }}/{{ score.score.count }}({{ score.score.correct|div:score.score.count|mul:100|floatformat:2 }}%)</td>
-                                    </tr>
-                                    {% endif %}
-                                    </tbody>
-                                </table>
+                        {% for result in result_list %}
+                            <h4 class="h6 mb-5">완료일시 : {{ result.finished_dt|date:"Y년 m월 d일 H시 i분" }}</h4>
+                            <div class="row justify-content-center mb-5">
+                                <div class="col-6 text-center">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <td>항목</td>
+                                            <td>점수</td>
+                                        </tr>
+                                        </thead>
+                                        {% with score=result.calculate_score %}
+                                            <tbody>
+                                            {% if score.avg_rt > 0 %}
+                                                <tr>
+                                                    <td>평균응답시간</td>
+                                                    <td>{{ score.avg_rt|floatformat:2 }} 초</td>
+                                                </tr>
+                                            {% endif %}
+                                            {% if score.score.count != 0 %}
+                                                <tr>
+                                                    <td>정답률</td>
+                                                    <td>{{ score.score.correct }}/{{ score.score.count }}({{ score.score.correct|div:score.score.count|mul:100|floatformat:2 }}%)</td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        {% endwith %}
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-
+                        {% endfor %}
                     </div>
                 </div>
             </div>
