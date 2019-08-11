@@ -7,6 +7,6 @@ from participate.models import Participate
 class ResearchAgreeForm(forms.ModelForm):
     class Meta:
         model = Participate
-        fields = ['agree_name', 'date']
+        fields = ['agree_name', 'agree_date']
 
-    date = forms.DateField(input_formats=['%Y-%m-%d'], initial=timezone.now().date(), label='동의일자')
+    agree_date = forms.DateField(input_formats=['%Y-%m-%d'], initial=timezone.now().date(), label='동의일자')
