@@ -55,7 +55,12 @@ class ParticipateGameList(models.Model):
                     continue
             else:
                 continue
-        result = {'score': {'correct': score_list.count(True), 'count': len(score_list)}, 'avg_rt': sum(rt_list)/len(rt_list)/1000}
+        try:
+            result = {'score': {'correct': score_list.count(True), 'count': len(score_list)}, 'avg_rt': sum(rt_list)/len(rt_list)/1000}
+        except ZeroDivisionError:
+            result = {'score': {'correct': score_list.count(True), 'count': len(score_list)},
+                      'avg_rt': 0}
+
         return result
 
 
