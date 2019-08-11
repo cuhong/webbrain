@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'taggit',
     'bootstrap4',
+    'bootstrap4_datetime',
     'mathfilters',
     'ordered_model',
     'django_json_widget',
