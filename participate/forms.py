@@ -10,4 +10,4 @@ class ResearchAgreeForm(forms.ModelForm):
         model = Participate
         fields = ['agree_name', 'agree_date']
 
-    agree_date = forms.DateField(widget=DateTimePicker(options={'format': "YYYY-MM-DD"}), initial=timezone.now().date(), label='동의일자')
+    agree_date = forms.DateField(widget=DateTimePicker(options={'format': "YYYY-MM-DD", "pickSeconds": False}), initial=timezone.now().date(), label='동의일자')

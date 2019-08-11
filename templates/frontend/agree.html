@@ -34,7 +34,8 @@
                 <form id="agreeSign" method="post" novalidate>
                     {% csrf_token %}
                     {{ form.media }}
-                    {% bootstrap_form form %}
+                    {% bootstrap_field form.agree_name %}
+                    {{ form.agree_date }}
                     <button class="btn btn-primary btn-rounded btn-block my-4" type="button"
                             onclick="agree()">동의하고 연구 참여
                 </form>
