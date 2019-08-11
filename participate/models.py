@@ -37,12 +37,11 @@ class ParticipateGameList(models.Model):
         rt_list = []
         result_list = self.result
         for result in result_list:
+            rt = result.get('rt', None)
+            if rt:
+                rt_list.append(rt)
             correct_response = result.get('correct_response', None)
             if correct_response:
-                #
-                rt = result.get('rt', None)
-                if rt:
-                    rt_list.append(rt)
 
                 _button_pressed = result.get('button_pressed', None)
                 if _button_pressed:
@@ -55,6 +54,7 @@ class ParticipateGameList(models.Model):
                     continue
             else:
                 continue
+
         try:
             result = {'score': {'correct': score_list.count(True), 'count': len(score_list)}, 'avg_rt': sum(rt_list)/len(rt_list)/1000}
         except ZeroDivisionError:
