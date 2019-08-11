@@ -58,13 +58,13 @@ class ResearchView(LoginRequiredMixin, View):
                                                                        'participated_game_list': participated_game_list,
                                                                        'unparticipated_game_list': unparticipated_game_list})
         else:
-            form = ResearchAgreeForm(instance=_participate)
+            form = ResearchAgreeForm()
             return render(request, 'frontend/agree.html', context={'research': research, 'form': form})
 
     def post(self, request, research_hex):
         research = get_object_or_404(Research, hex=research_hex)
         participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research))
-        form = ResearchAgreeForm(request.POST, instance=participate)
+        form = ResearchAgreeForm(request.POST, )
         if form.is_valid():
             data = form.cleaned_data
             _participate = form.save(commit=False)
