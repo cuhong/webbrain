@@ -230,11 +230,26 @@ class ParticipateGameListResource(resources.ModelResource):
         return round(score * 100, 2)
 
 
+class ParticipateGameListResearchFilter(SimpleListFilter):
+    title = '연구'
+    parameter_name = 'research'
+
+    def lookups(self, request, model_admin):
+        research_list = Research.objects.values_list('id', 'project_title').filter(user=request.user)
+        return research_list
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(participate__research_id=self.value())
+        else:
+            return queryset
+
+
 
 @admin.register(ParticipateGameListAdminProxy, site=research_site)
 class ParticipateGameListAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['research', 'participant', 'game', 'finished_dt', 'response_time', 'score']
-    list_filter = [ResearchFilter]
+    list_filter = [ParticipateGameListResearchFilter]
     resource_class = ParticipateGameListResource
 
     def research(self, obj):
