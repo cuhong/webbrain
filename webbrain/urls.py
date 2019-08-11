@@ -15,4 +15,5 @@ urlpatterns = [
     path('research/<str:research_hex>/download/', ResearchResultDownloadView.as_view(), name='get_result')
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
