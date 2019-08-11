@@ -7,7 +7,7 @@ class BaseUserAdmin(UserAdmin, ):
     ordering = ('date_joined',)
     search_fields = ('email', 'name')
     fieldsets = (
-        (None, {'fields': ('email', 'name', 'password', 'date_joined', 'is_staff', 'is_researcher')}),
+        (None, {'fields': ('email', 'name', 'password', 'date_joined', 'is_staff', 'is_researcher', 'group')}),
     )
 
     def get_readonly_fields(self, request, obj=None):
