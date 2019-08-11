@@ -3,7 +3,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'e$mu))=4o0(x4=n5auxg=^+w^oy7z2*@l%i8^g&wh$6on@prqw'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['13.124.82.23', '127.0.0.1']
 
@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'taggit',
     'bootstrap4',
     'bootstrap_datepicker_plus',
