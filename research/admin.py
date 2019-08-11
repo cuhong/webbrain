@@ -170,7 +170,6 @@ class ParticipateAdmin(ExportMixin, admin.ModelAdmin):
         return False
 
     def get_queryset(self, request):
-        self.request = request
         queryset = super(ParticipateAdmin, self).get_queryset(request)
         return queryset.filter(research__user=request.user)
 
@@ -251,6 +250,11 @@ class ParticipateGameListAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['research', 'participant', 'game', 'finished_dt', 'response_time', 'score']
     list_filter = [ParticipateGameListResearchFilter]
     resource_class = ParticipateGameListResource
+
+    def get_queryset(self, request):
+        queryset = super(ParticipateGameListAdmin, self).get_queryset(request)
+        return queryset.filter(participate__research__user=request.user)
+
 
     def research(self, obj):
         return obj.participate.research
