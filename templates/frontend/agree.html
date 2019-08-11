@@ -32,7 +32,6 @@
         <div class="row justify-content-center mt-5">
             <div class="col-6">
                 <form id="agreeSign" method="post" novalidate>
-                    {{ form.media }}
                     {% csrf_token %}
                     {% bootstrap_form form %}
                     <button class="btn btn-primary btn-rounded btn-block my-4" type="button"
@@ -96,4 +95,7 @@
 
         }
     </script>
+    {% block extrascript %}
+                    {{ form.media }}
+    {% endblock %}
 {% endblock %}
