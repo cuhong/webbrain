@@ -1,3 +1,4 @@
+from bootstrap4_datetime.widgets import DateTimePicker
 from django import forms
 from django.utils import timezone
 
@@ -9,4 +10,4 @@ class ResearchAgreeForm(forms.ModelForm):
         model = Participate
         fields = ['agree_name', 'agree_date']
 
-    agree_date = forms.DateField(input_formats=['%Y-%m-%d'], initial=timezone.now().date(), label='동의일자')
+    agree_date = forms.DateField(widget=DateTimePicker(options={'format': "YYYY-MM-DD"}), initial=timezone.now().date(), label='동의일자')
