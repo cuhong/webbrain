@@ -1,5 +1,7 @@
 timeline.push({
-type: {% if sequence.choices %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type.html' %}{% endwith %}{% else %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type_b2k.html' %}{% endwith %}{% endif %},
+type:{% if sequence.choices %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type.html' %}
+{% endwith %}{% else %}{% with stimulus=sequence.stimulus %}{% include 'game/include/type_b2k.html' %}
+{% endwith %}{% endif %},
 stimulus: {% with stimulus=sequence.stimulus %}{% include 'game/include/stimulus.html' %}{% endwith %},
 
 {% if sequence.stimulus_duration %}
@@ -28,74 +30,118 @@ stimulus: {% with stimulus=sequence.stimulus %}{% include 'game/include/stimulus
     ],
 {% endif %}
 
-data: {
+{#data: {#}
+{#{% if sequence.answer %}#}
+{#    correct_response: {{ sequence.answer_identifier }},#}
+{#{% endif %}#}
+{#{% if sequence.test %}#}
+{#    test_part: "test",#}
+{#{% endif %}#}
+{#on_finish: function (data) {#}
+{#var current_time = new Date();#}
+{#end_time_list.push(current_time);#}
+{#{% if sequence.answer and sequence.test %}#}
+{#    data.correct = int(data.button_pressed) == int(data.correct_response)#}
+{#{% endif %}#}
+{#},#}
+{#on_load: function (data) {#}
+{#var current_time = new Date();#}
+{#start_time_list.push(current_time);#}
+{#}#}
+{#}#}
+
 {% if sequence.answer %}
-    correct_response: {{ sequence.answer_identifier }},
-{% endif %}
-{% if sequence.test %}
-    test_part: "test",
-{% endif %}
-    on_finish: function (data) {
-        var current_time = new Date();
-        end_time_list.push(current_time);
-        {% if sequence.answer and sequence.test %}
-        data.correct = int(data.button_pressed) == int(data.correct_response);
-        {% endif %}
+    {% if sequence.test %}
+        {#         정답이 있고 / 시험인 경우#}
+        data: {
+            correct_response: {{ sequence.answer_identifier }},
+            test_part: "test",
+            on_finish: function (data) {
+                data.correct = data.button_pressed == data.correct_response;
+                var current_time = new Date();
+                end_time_list.push(current_time);
+            },
+            on_load: function (data) {
+                var current_time = new Date();
+                start_time_list.push(current_time);
+            },
+        },
+    {% else %}
+        {#         정답이 있고 / 시험이 아닌 경우#}
+        data: {
+            {% if sequence.answer_identifier %}
+            correct_response: {{ sequence.answer_identifier }},
+            {% else %}
+            correct_response: null,
+            {% endif %}
+        },
+    {% endif %}
+{% else %}
+    {% if sequence.test %}
+    {#         정답이 없고, 시험인 경우#}
+    data: {
+        test_part: "test",
+        on_finish: function (data) {
+            var current_time = new Date();
+            end_time_list.push(current_time);
+        },
+        on_load: function (data) {
+            var current_time = new Date();
+            start_time_list.push(current_time);
+        },
     },
-    on_load: function (data) {
-        var current_time = new Date();
-        start_time_list.push(current_time);
-    }
-}
+    {% else %}
+    {% endif %}
+{% endif %}
 })
 
 {% if sequence.feedback_type == 'c' %}
-timeline.push({
+    timeline.push({
     type: {% include 'game/include/type_b2k.html' %},
     stimulus: jsPsych.data.get().last(1).values()[0].choices[jsPsych.data.get().last(1).values()[0].button_pressed],
     {% if sequence.feedback_duration %}
-    trial_duration: {{ sequence.feedback_duration }}
+        trial_duration: {{ sequence.feedback_duration }}
     {% endif %}
-})
+    })
 {% elif sequence.feedback_type == 'a' %}
-timeline.push({
+    timeline.push({
     type: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
     stimulus: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/stimulus.html' %}{% endwith %},
     {% if sequence.feedback_duration %}
-    trial_duration: {{ sequence.feedback_duration }}
+        trial_duration: {{ sequence.feedback_duration }}
     {% endif %}
-})
+    })
 {% elif sequence.feedback_type == 'tf' %}
-timeline.push({
+    timeline.push({
     timeline: [{
-        type: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
-        stimulus: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/stimulus.html' %}{% endwith %},
-        trial_duration: {{ sequence.feedback_duration }}
+    type: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
+    stimulus: {% with stimulus=sequence.feedback_1 %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    trial_duration: {{ sequence.feedback_duration }}
     }],
     conditional_function: function (data) {
-        var data = jsPsych.data.get().last(1).values()[0];
-        if (data.correct_response == data.button_pressed) {
-            return true;
-        } else {
-            return false;
-        }
+    var data = jsPsych.data.get().last(1).values()[0];
+    if (data.correct_response == data.button_pressed) {
+    return true;
+    } else {
+    return false;
     }
-})
-timeline.push({
+    }
+    })
+    timeline.push({
     timeline: [{
-        type: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
-        stimulus: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/stimulus.html' %}{% endwith %},
-        trial_duration: {{ sequence.feedback_duration }}
+    type: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/type_b2k.html' %}{% endwith %},
+    stimulus: {% with stimulus=sequence.feedback_2 %}{% include 'game/include/stimulus.html' %}{% endwith %},
+    trial_duration: {{ sequence.feedback_duration }}
     }],
     conditional_function: function (data) {
-        var data = jsPsych.data.get().last(1).values()[0];
-        if (data.correct_response == data.button_pressed) {
-            return false;
-        } else {
-            return true;
-        }
+    var data = jsPsych.data.get().last(1).values()[0];
+    if (data.correct_response == data.button_pressed) {
+    return false;
+    } else {
+    return true;
     }
-})
+    }
+    })
 {% endif %}
 
 

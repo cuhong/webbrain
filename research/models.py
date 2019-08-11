@@ -60,13 +60,14 @@ class Game(OrderedModel):
     class Meta(OrderedModel.Meta):
         ordering = ('research', 'order')
 
-    order = models.PositiveIntegerField(verbose_name='순서', editable=False, db_index=True)
+    order = models.PositiveIntegerField(verbose_name='순서', db_index=True)
     registered_at = models.DateTimeField(auto_now_add=True)
     research = models.ForeignKey(Research, on_delete=models.PROTECT, verbose_name='연구', editable=False)
     game_title = models.CharField(max_length=300, null=False, blank=False, verbose_name='게임명')
     game_file = models.FileField(null=False, blank=False, verbose_name='게임파일', upload_to='project/game/%Y/%m/%d',
                                  validators=[FileExtensionValidator(allowed_extensions=['zip'])])
     game_json = JSONField(null=True, blank=True, verbose_name='게임 json')
+    parse_result = models.BooleanField(default=False, verbose_name='파싱성공')
     order_with_respect_to = 'research'
 
     @property

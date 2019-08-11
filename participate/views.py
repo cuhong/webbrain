@@ -51,8 +51,8 @@ class ResearchView(LoginRequiredMixin, View):
         _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
 
         if _participate.agree:
-            participated_game_list = ParticipateGameList.objects.select_related('game').filter(participate=_participate)
-            unparticipated_game_list = research.game_set.exclude(id__in=[p.game.id for p in participated_game_list])
+            participated_game_list = ParticipateGameList.objects.select_related('game').filter(Q(participate=_participate))
+            unparticipated_game_list = research.game_set.filter(Q(parse_result=True) & ~Q(id__in=[p.game.id for p in participated_game_list]))
 
             return render(request, 'frontend/game_list.html', context={'research': research,
                                                                        'participated_game_list': participated_game_list,

@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'bootstrap_datepicker_plus',
     'mathfilters',
     'ordered_model',
+    'import_export',
     'django_json_widget',
     'django_summernote',
     'solo',
@@ -35,7 +36,8 @@ JET_SIDE_MENU_ITEMS = {
     'research_admin_site': [
         {'label': '연구관리', 'items': [
             {'name': 'research.researchadminproxyforresearch', 'label': '연구'},
-            {'name': 'admin.participateadminproxy', 'label': '결과'}
+            {'name': 'research.participateadminproxy', 'label': '연구참여자'},
+            {'name': 'research.participategamelistadminproxy', 'label': '게임결과'},
         ]},
     ],
     'administration_admin': [

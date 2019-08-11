@@ -48,14 +48,12 @@
         timeline: timeline,
         show_preload_progress_bar: true,
         on_finish: function () {
-            // jsPsych.data.get().localSave('csv', 'data.csv');
             var json_result = jsPsych.data.get().json();
             $.ajax({
                 type: "POST",
                 data: {'csrfmiddlewaretoken': '{{ csrf_token }}', 'json_result': json_result},
                 dataType: "json",
                 success: function (response) {
-                    alert(response.message);
                     window.location.href = '{% url 'participate:game_result' research_hex=research_hex game_id=game.id %}';
                 },
                 error: function (response) {

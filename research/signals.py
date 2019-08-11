@@ -19,5 +19,9 @@ def game_post_save(sender, instance, created, raw, using, **kwargs):
             zip.extractall(instance.game_file.path.split('.')[0])
 
         parsed_dict = Parser(instance.exp_path)
-        instance.game_json = parsed_dict.parsed_dict
+        if parsed_dict.parse_result:
+            instance.parse_result = True
+            instance.game_json = parsed_dict.parsed_dict
+        else:
+            instance.parse_result = False
         instance.save()
