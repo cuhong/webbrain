@@ -10,5 +10,5 @@ class ResearchAgreeForm(forms.ModelForm):
         model = Participate
         fields = ['agree_name', 'agree_date']
         widgets = {
-            'agree_date': DatePickerInput()
+            'agree_date': DatePickerInput(format='YYYY-MM-DD')
         }
