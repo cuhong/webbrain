@@ -128,14 +128,13 @@ class ParticipateGameListInlineAdmin(admin.TabularInline):
 class ParticipateResource(resources.ModelResource):
     class Meta:
         model = ParticipateAdminProxy
-        fields = ['research', 'participate_at', 'participant', 'agree_name', 'agree_date', 'agree']
-        export_order = ['research', 'participate_at', 'participant', 'agree_name', 'agree_date', 'agree']
+        fields = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
+        export_order = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
 
     research = resources.Field(attribute='research', column_name='연구')
     participate_at = resources.Field(attribute='participate_at', column_name='연구참여일시')
     participant = resources.Field(attribute='participant', column_name='피험자(아이디)')
     agree_name = resources.Field(attribute='agree_name', column_name='동의자명')
-    agree_date = resources.Field(attribute='agree_date', column_name='동의일')
     agree = resources.Field(attribute='agree', column_name='동의여부')
 
     def dehydrate_research(self, obj):
@@ -158,9 +157,9 @@ class ParticipateResource(resources.ModelResource):
 @admin.register(ParticipateAdminProxy, site=research_site)
 class ParticipateAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ParticipateResource
-    readonly_fields = ['participate_at', 'participant', 'research', 'agree', 'agree_name', 'agree_date']
+    readonly_fields = ['participate_at', 'participant', 'research', 'agree', 'agree_name',]
     list_filter = ['research', 'participant', 'agree']
-    list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree_date', 'agree']
+    list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
     inlines = [ParticipateGameListInlineAdmin]
 
     def has_add_permission(self, request):

@@ -68,14 +68,8 @@
         function nameDate() {
             var form = document.getElementById('agreeSign');
             var name = document.getElementById('id_agree_name');
-            var date = document.getElementById('id_agree_date');
             var chk = [];
             if (name.value === "") {
-                chk.push(false)
-            } else {
-                chk.push(true)
-            }
-            if (date.value === "") {
                 chk.push(false)
             } else {
                 chk.push(true)
@@ -90,7 +84,7 @@
             if (_chk) {
                 form.submit();
             } else {
-                alert('이름과 날짜를 입력해주세요.');
+                alert('이름을 입력해주세요.');
             }
 
         }
