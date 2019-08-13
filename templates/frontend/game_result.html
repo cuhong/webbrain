@@ -20,24 +20,25 @@
                                         <tr>
                                             <td>항목</td>
                                             <td>점수</td>
+                                            <td>순위</td>
                                         </tr>
                                         </thead>
-                                        {% with score=result.calculate_score %}
-                                            <tbody>
-                                            {% if score.avg_rt > 0 %}
-                                                <tr>
-                                                    <td>평균응답시간</td>
-                                                    <td>{{ score.avg_rt|floatformat:2 }} 초</td>
-                                                </tr>
-                                            {% endif %}
-                                            {% if score.score.count != 0 %}
-                                                <tr>
-                                                    <td>정답률</td>
-                                                    <td>{{ score.score.correct }}/{{ score.score.count }}({{ score.score.correct|div:score.score.count|mul:100|floatformat:2 }}%)</td>
-                                                </tr>
-                                            {% endif %}
-                                            </tbody>
-                                        {% endwith %}
+                                        <tbody>
+                                        {% if result.response_time > 0 %}
+                                            <tr>
+                                                <td>평균응답시간</td>
+                                                <td>{{ result.response_time|floatformat:2 }} 초</td>
+                                                <td>{{ result.rank.correct }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if result.count != 0 %}
+                                            <tr>
+                                                <td>정답률</td>
+                                                <td>{{ result.correct }}/{{ result.count }}({{ result.correct|div:result.count|mul:100|floatformat:2 }}%)</td>
+                                            <td>{{ result.rank.correct }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>

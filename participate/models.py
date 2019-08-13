@@ -31,6 +31,9 @@ class ParticipateGameList(models.Model):
     game = models.ForeignKey('research.Game', on_delete=models.CASCADE, verbose_name='게임', editable=False)
     finished_dt = models.DateTimeField(auto_now_add=True, verbose_name='참여일시', editable=False)
     result = JSONField(null=True, blank=True, verbose_name='결과', editable=False)
+    count = models.IntegerField(null=True, blank=True, verbose_name='문항수')
+    correct = models.IntegerField(null=True, blank=True, verbose_name='정답')
+    response_time = models.FloatField(null=True, blank=True, verbose_name='평균응답시간')
 
     def __str__(self):
         return "[{}] {}/{}".format(self.participate.participant, self.participate.research, self.game.game_title)
@@ -57,13 +60,17 @@ class ParticipateGameList(models.Model):
                     score_list.append(False)
             else:
                 continue
-
         try:
             result = {'score': {'correct': score_list.count(True), 'count': len(score_list)}, 'avg_rt': sum(rt_list)/len(rt_list)/1000}
         except ZeroDivisionError:
             result = {'score': {'correct': score_list.count(True), 'count': len(score_list)},
                       'avg_rt': 0}
 
+        self.count = len(score_list)
+        self.correct = score_list.count(True)
+        if len(rt_list) != 0:
+            self.response_time = sum(rt_list)/len(rt_list)/1000
+        self.save()
         return result
 
 

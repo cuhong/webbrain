@@ -51,8 +51,10 @@ class ResearchView(LoginRequiredMixin, View):
         _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
 
         if _participate.agree:
-            participated_game_list = ParticipateGameList.objects.select_related('game').filter(Q(participate=_participate)).distinct('game_id')
-            unparticipated_game_list = research.game_set.filter(Q(parse_result=True) & ~Q(id__in=[p.game.id for p in participated_game_list]))
+            participated_game_list = ParticipateGameList.objects.select_related('game').filter(
+                Q(participate=_participate)).distinct('game_id')
+            unparticipated_game_list = research.game_set.filter(
+                Q(parse_result=True) & ~Q(id__in=[p.game.id for p in participated_game_list]))
 
             return render(request, 'frontend/game_list.html', context={'research': research,
                                                                        'participated_game_list': participated_game_list,
@@ -108,7 +110,8 @@ class ParticipantLogoutView(LoginRequiredMixin, View):
 class GameView(LoginRequiredMixin, View):
     def get(self, request, research_hex, game_id):
         research = get_object_or_404(Research, hex=research_hex)
-        participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
+        participate = get_object_or_404(Participate,
+                                        Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
         game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
         if ParticipateGameList.objects.filter(Q(participate=participate) & Q(game=game)).exists():
             messages.info(request, '이미 참여한 게임입니다.')
@@ -127,7 +130,8 @@ class GameView(LoginRequiredMixin, View):
         else:
             json_data = request.POST.get('json_result')
             data = json.loads(json_data)
-            ParticipateGameList.objects.create(participate=participate, game=game, result=data)
+            pgl = ParticipateGameList.objects.create(participate=participate, game=game, result=data)
+            pgl.calculate_score()
             context = {'result': True, 'message': '게임 결과가 전송되었습니다.'}
         return HttpResponse(json.dumps(context), content_type='application/json')
 
@@ -147,37 +151,34 @@ class GameRetestView(LoginRequiredMixin, View):
         participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research))
         json_data = request.POST.get('json_result')
         data = json.loads(json_data)
-        ParticipateGameList.objects.create(participate=participate, game=game, result=data)
+        pgl = ParticipateGameList.objects.create(participate=participate, game=game, result=data)
+        pgl.calculate_score()
         context = {'result': True, 'message': '게임 결과가 전송되었습니다.'}
         return HttpResponse(json.dumps(context), content_type='application/json')
+
+
+def rank(list, value):
+    _find = [True if v == value else False for v in list]
+    if _find.count(True) == 0:
+        return 0
+    for idx, _value in enumerate(sorted(list)):
+        if _value == value:
+            return idx + 1
 
 
 class GameResultView(LoginRequiredMixin, View):
     def get(self, request, research_hex, game_id):
         research = get_object_or_404(Research, Q(hex=research_hex))
-        participate = get_object_or_404(Participate, Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
+        participate = get_object_or_404(Participate,
+                                        Q(participant=self.request.user) & Q(research=research) & Q(agree=True))
         game = get_object_or_404(Game, Q(research=research) & Q(id=game_id))
-        result_list = ParticipateGameList.objects.filter(Q(participate=participate) & Q(game=game))
-        context = {'result_list': result_list, 'research': research,}
+        result_list = ParticipateGameList.objects.values().filter(Q(participate=participate) & Q(game=game))
+        game_result_list = ParticipateGameList.objects.values('count', 'correct', 'response_time').filter(game=game)
+        response_time_list = [result['response_time'] for result in game_result_list]
+        correct_list = [result['correct'] for result in game_result_list]
+        for game_result in result_list:
+            game_result.update({'rank': {}})
+            game_result['rank']['correct'] = rank(correct_list, game_result['correct'])
+            game_result['rank']['response_time'] = rank(response_time_list, game_result['response_time'])
+        context = {'result_list': result_list, 'research': research}
         return render(request, template_name='frontend/game_result.html', context=context)
-
-
-# class ParticipateLogoutView(LogoutView):
-
-# class ParticipantLoginView(View):
-#     def get(self, request):
-#         form = CustomLoginView()
-#         return render(request, 'frontend/auth/login.html', context={'form': form})
-#
-#     def post(self, request):
-#         form = CustomLoginView(request.POST)
-#         if form.is_valid():
-#             data = form.cleaned_data
-#             user = authenticate(request, email=data['user'], password=data['password'])
-#             if user:
-#                 login(request, user)
-#                 return HttpResponseRedirect(reverse('participate:index'))
-#             else:
-#                 return HttpResponse('로그인 실패')
-#         else:
-#             return render(request, 'frontend/auth/login.html', context={'form': form})
