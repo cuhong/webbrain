@@ -16,7 +16,7 @@ from django.views.generic import TemplateView
 from participate.forms import ResearchAgreeForm
 from participate.models import Participate, ParticipateGameList
 from administration.models import MainPage
-from research.models import Research, Game
+from research.models import Research, Game, Poll
 
 from research.parsers import Parser
 from users.forms import CustomParticipantUserCreationForm
@@ -49,8 +49,12 @@ class ResearchView(LoginRequiredMixin, View):
     def get(self, request, research_hex):
         research = get_object_or_404(Research.objects.prefetch_related('game_set'), hex=research_hex)
         _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
-
+        poll_list = Poll.objects.filter(research=research)
         if _participate.agree:
+            if poll_list.exists() and _participate.poll is None:
+                context = {'research': research, 'poll_list': poll_list}
+                return render(request, 'frontend/poll.html', context=context)
+
             participated_game_list = ParticipateGameList.objects.select_related('game').filter(
                 Q(participate=_participate)).distinct('game_id')
             unparticipated_game_list = research.game_set.filter(
@@ -76,6 +80,40 @@ class ResearchView(LoginRequiredMixin, View):
         else:
             print(form.errors)
             return HttpResponseRedirect(reverse('participate:research', kwargs={'research_hex': research_hex}))
+
+
+class ResearchPollView(LoginRequiredMixin, View):
+
+    def post(self, request, research_hex):
+        research = get_object_or_404(Research.objects.prefetch_related('game_set'), hex=research_hex)
+        _participate, created = Participate.objects.get_or_create(participant=self.request.user, research=research)
+        poll_list = Poll.objects.filter(research=research)
+        if poll_list.exists():
+            if _participate.poll is None:
+                data = request.POST
+                try:
+                    poll_result = {}
+                    for k, v in data.items():
+                        if 'poll' in k:
+                            poll_id = int(k.split('_')[-1])
+                            poll = Poll.objects.get(id=poll_id)
+                            question = poll.question
+                            poll_value = str(v[0]) if poll.question_type == 0 else poll.select()[int(v[0])-1]['value']
+                            poll_result.update({question: poll_value})
+                    print(poll_result)
+                except:
+                    context = {'message': '저장 실패'}
+                else:
+                    _participate.poll = poll_result
+                    _participate.save()
+                    context = {'message': '저장 성공'}
+                return HttpResponse(json.dumps(context), content_type='application/json')
+            else:
+                context = {'message': '이미 참여한 설문입니다.'}
+                return HttpResponse(json.dumps(context), content_type='application/json')
+        else:
+            context = {'message': '잘못된 접근.'}
+            return HttpResponse(json.dumps(context), content_type='application/json')
 
 
 class ParticipantSignupView(View):

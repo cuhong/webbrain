@@ -15,6 +15,15 @@
                 {% endautoescape %}
             </div>
         </div>
+    {% if research.reward %}
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="pb-3">
+                    <span class="h6">연구 참여 완료시 [{{ research.reward_description }}] 을/를 제공합니다.</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
         <div class="row mt-5">
             <div class="col-lg-12">
                 <div class="pb-3">

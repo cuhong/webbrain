@@ -14,7 +14,7 @@ from django_json_widget.widgets import JSONEditorWidget
 
 from research.forms import ResearchAdminAuthenticationForm
 from research.models import ResearchAdminProxyForResearch, Game, Research, Agree, ParticipateAdminProxy, \
-    ParticipateGameListAdminProxy
+    ParticipateGameListAdminProxy, Poll
 from participate.models import Participate
 
 
@@ -51,6 +51,14 @@ class AgreeInlineAdmin(admin.StackedInline):
     extra = 3
 
 
+class ResearchPollInlineAdmin(OrderedTabularInline):
+    verbose_name = '설문'
+    verbose_name_plural = verbose_name
+    model = Poll
+    fields = ('question', 'question_type', 'choices', 'required', 'move_up_down_links')
+    readonly_fields = ('move_up_down_links',)
+
+
 @admin.register(ResearchAdminProxyForResearch, site=research_site)
 class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, admin.ModelAdmin):
     # 연구자용 연구 페이지
@@ -58,7 +66,7 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
     readonly_fields = ('status', 'user',)
     summernote_fields = ('project_agreement',)
 
-    inlines = (GameInlineAdmin, AgreeInlineAdmin)
+    inlines = (GameInlineAdmin, AgreeInlineAdmin, ResearchPollInlineAdmin)
 
     def link(self, obj):
         url = reverse('participate:research', kwargs={'research_hex': obj.hex})
@@ -85,7 +93,6 @@ class ResearchModelAdmin(OrderedInlineModelAdminMixin, SummernoteModelAdmin, adm
                     'project_title', 'project_description', 'project_agreement', 'project_start_date', 'tags')}),
             )
         fieldsets += (
-            ('참여조건', {'fields': ('condition_age_min', 'condition_age_max', 'condition_gender')}),
             ('리워드', {'fields': ('reward', 'reward_description')}),
         )
         return fieldsets
@@ -157,7 +164,7 @@ class ParticipateResource(resources.ModelResource):
 @admin.register(ParticipateAdminProxy, site=research_site)
 class ParticipateAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ParticipateResource
-    readonly_fields = ['participate_at', 'participant', 'research', 'agree', 'agree_name',]
+    readonly_fields = ['participate_at', 'participant', 'research', 'agree', 'agree_name', ]
     list_filter = ['research', 'participant', 'agree']
     list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
     inlines = [ParticipateGameListInlineAdmin]
@@ -258,7 +265,6 @@ class ParticipateGameListGameFilter(SimpleListFilter):
             return queryset
 
 
-
 @admin.register(ParticipateGameListAdminProxy, site=research_site)
 class ParticipateGameListAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['research', 'participant', 'game', 'finished_dt', 'response_time', 'score']
@@ -268,7 +274,6 @@ class ParticipateGameListAdmin(ExportMixin, admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super(ParticipateGameListAdmin, self).get_queryset(request)
         return queryset.filter(participate__research__user=request.user)
-
 
     def research(self, obj):
         return obj.participate.research

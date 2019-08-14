@@ -1,6 +1,8 @@
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.forms import AuthenticationForm
-from django.forms import forms
+from django import forms
+
+from research.models import Poll
 
 
 class ResearchAdminAuthenticationForm(AdminAuthenticationForm):
@@ -21,3 +23,5 @@ class ResearchAdminAuthenticationForm(AdminAuthenticationForm):
                 code='invalid_login',
                 params={'username': self.username_field.verbose_name}
             )
+
+

@@ -17,6 +17,7 @@ class Participate(models.Model):
     research = models.ForeignKey('research.Research', on_delete=models.CASCADE, null=False, blank=False, verbose_name='연구', editable=False)
     agree = models.BooleanField(default=False, verbose_name='동의', editable=False)
     agree_name = models.CharField(max_length=100, null=True, blank=False, verbose_name='동의자명')
+    poll = JSONField(null=True, blank=True, verbose_name='설문결과')
 
     def __str__(self):
         return "[{}] {}".format(self.participant, self.research)

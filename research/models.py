@@ -34,9 +34,9 @@ class Research(models.Model):
     reward = models.BooleanField(default=False, verbose_name='리워드 제공')
     reward_description = models.CharField(max_length=300, null=True, blank=True, verbose_name='리워드 내용')
     tags = TaggableManager(verbose_name='태그', blank=True)
-    condition_age_min = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 하한)')
-    condition_age_max = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 상한)')
-    condition_gender = models.IntegerField(choices=CONDITION_GENDER_CHOICES, default=0, verbose_name='연구참여조건(성별)')
+    # condition_age_min = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 하한)')
+    # condition_age_max = models.PositiveIntegerField(null=True, blank=True, verbose_name='연구참여조건(나이 상한)')
+    # condition_gender = models.IntegerField(choices=CONDITION_GENDER_CHOICES, default=0, verbose_name='연구참여조건(성별)')
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=1, null=False, blank=False, verbose_name='상태')
 
@@ -54,6 +54,25 @@ class Agree(models.Model):
 
     def __str__(self):
         return self.item
+
+
+class Poll(OrderedModel):
+    QUESTION_TYPE_CHOICES = ((0, '주관식'), (1, '객관식'))
+    registered_at = models.DateTimeField(auto_now_add=True)
+    research = models.ForeignKey(Research, on_delete=models.PROTECT, verbose_name='연구', editable=False)
+    question = models.CharField(max_length=500, null=False, blank=False, verbose_name='문항')
+    question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=False, blank=False, verbose_name='타입')
+    choices = models.CharField(max_length=500, null=False, blank=True, default='', verbose_name='객관식 선지',
+                               help_text='선택지를 콤마(,)로 구분해 순서대로 입력해주세요.')
+    required = models.BooleanField(default=False, verbose_name='필수여부')
+    order_with_respect_to = 'research'
+
+    class Meta(OrderedModel.Meta):
+        verbose_name = '설문'
+        verbose_name_plural = '설문'
+
+    def select(self):
+        return [{'id': idx+1, 'value': s.strip()} for idx, s in enumerate(self.choices.split(','))]
 
 
 class Game(OrderedModel):
