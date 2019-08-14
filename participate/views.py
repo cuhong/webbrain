@@ -98,7 +98,7 @@ class ResearchPollView(LoginRequiredMixin, View):
                             poll_id = int(k.split('_')[-1])
                             poll = Poll.objects.get(id=poll_id)
                             question = poll.question
-                            poll_value = str(v[0]) if poll.question_type == 0 else poll.select()[int(v[0])-1]['value']
+                            poll_value = str(v) if poll.question_type == 0 else poll.select()[int(v[0])-1]['value']
                             poll_result.update({question: poll_value})
                     print(poll_result)
                 except:
