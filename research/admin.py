@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import pytz
 from django.contrib import admin
@@ -169,6 +170,9 @@ class ParticipateAdmin(ExportMixin, admin.ModelAdmin):
     list_filter = ['research', 'participant', 'agree']
     list_display = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
     inlines = [ParticipateGameListInlineAdmin]
+
+    def dehydrate_poll(self, value):
+        return 1
 
     def has_add_permission(self, request):
         return False

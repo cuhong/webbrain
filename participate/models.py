@@ -4,6 +4,34 @@ from django.db import models
 from solo.models import SingletonModel
 
 User = get_user_model()
+import json
+
+from django.contrib.postgres.forms.jsonb import (
+    InvalidJSONInput,
+    JSONField as JSONFormField,
+)
+
+
+class UTF8JSONFormField(JSONFormField):
+
+    def prepare_value(self, value):
+        if isinstance(value, InvalidJSONInput):
+            return value
+        return json.dumps(value, ensure_ascii=False)
+
+
+class UTF8JSONField(JSONField):
+    """JSONField for postgres databases.
+
+    Displays UTF-8 characters directly in the admin, i.e. äöü instead of
+    unicode escape sequences.
+    """
+
+    def formfield(self, **kwargs):
+        return super().formfield(**{
+            **{'form_class': UTF8JSONFormField},
+            **kwargs,
+        })
 
 
 class Participate(models.Model):
@@ -13,11 +41,13 @@ class Participate(models.Model):
         verbose_name_plural = verbose_name
 
     participate_at = models.DateTimeField(auto_now_add=True, verbose_name='연구시작일시')
-    participant = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, verbose_name='참가자', editable=False)
-    research = models.ForeignKey('research.Research', on_delete=models.CASCADE, null=False, blank=False, verbose_name='연구', editable=False)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, verbose_name='참가자',
+                                    editable=False)
+    research = models.ForeignKey('research.Research', on_delete=models.CASCADE, null=False, blank=False,
+                                 verbose_name='연구', editable=False)
     agree = models.BooleanField(default=False, verbose_name='동의', editable=False)
     agree_name = models.CharField(max_length=100, null=True, blank=False, verbose_name='동의자명')
-    poll = JSONField(null=True, blank=True, verbose_name='설문결과')
+    poll = UTF8JSONField(null=True, blank=True, verbose_name='설문결과')
 
     def __str__(self):
         return "[{}] {}".format(self.participant, self.research)
@@ -48,7 +78,7 @@ class ParticipateGameList(models.Model):
             if rt:
                 rt_list.append(rt)
             correct_response = result.get('correct_response', None)
-            if correct_response: # 정답이 있고
+            if correct_response:  # 정답이 있고
 
                 _button_pressed = result.get('button_pressed', None)
                 if _button_pressed:
@@ -57,12 +87,13 @@ class ParticipateGameList(models.Model):
                         score_list.append(True)
                     else:
                         score_list.append(False)
-                else: # 정답을 미선택한 경우
+                else:  # 정답을 미선택한 경우
                     score_list.append(False)
             else:
                 continue
         try:
-            result = {'score': {'correct': score_list.count(True), 'count': len(score_list)}, 'avg_rt': sum(rt_list)/len(rt_list)/1000}
+            result = {'score': {'correct': score_list.count(True), 'count': len(score_list)},
+                      'avg_rt': sum(rt_list) / len(rt_list) / 1000}
         except ZeroDivisionError:
             result = {'score': {'correct': score_list.count(True), 'count': len(score_list)},
                       'avg_rt': 0}
@@ -70,10 +101,6 @@ class ParticipateGameList(models.Model):
         self.count = len(score_list)
         self.correct = score_list.count(True)
         if len(rt_list) != 0:
-            self.response_time = sum(rt_list)/len(rt_list)/1000
+            self.response_time = sum(rt_list) / len(rt_list) / 1000
         self.save()
         return result
-
-
-
-

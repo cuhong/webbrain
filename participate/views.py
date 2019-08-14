@@ -99,7 +99,8 @@ class ResearchPollView(LoginRequiredMixin, View):
                             poll = Poll.objects.get(id=poll_id)
                             question = poll.question
                             poll_value = str(v) if poll.question_type == 0 else poll.select()[int(v[0])-1]['value']
-                            poll_result.update({question: poll_value})
+                            poll_json = json.loads(json.dumps(poll_value))
+                            poll_result.update({question: poll_json})
                     print(poll_result)
                 except:
                     context = {'message': '저장 실패'}
