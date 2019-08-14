@@ -157,11 +157,11 @@ class GameRetestView(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(context), content_type='application/json')
 
 
-def rank(list, value):
-    _find = [True if v == value else False for v in list]
+def rank(value_list, value, reverse=False):
+    _find = [True if v == value else False for v in value_list]
     if _find.count(True) == 0:
         return 0
-    for idx, _value in enumerate(sorted(list)):
+    for idx, _value in enumerate(sorted(value_list, reverse=reverse)):
         if _value == value:
             return idx + 1
 
@@ -178,7 +178,8 @@ class GameResultView(LoginRequiredMixin, View):
         correct_list = [result['correct'] for result in game_result_list]
         for game_result in result_list:
             game_result.update({'rank': {}})
-            game_result['rank']['correct'] = rank(correct_list, game_result['correct'])
+            game_result['rank']['correct'] = rank(correct_list, game_result['correct'], reverse=True)
             game_result['rank']['response_time'] = rank(response_time_list, game_result['response_time'])
-        context = {'result_list': result_list, 'research': research}
+        context = {'result_list': result_list, 'research': research, 'response_time_list': response_time_list,
+                   'correct_list': correct_list}
         return render(request, template_name='frontend/game_result.html', context=context)

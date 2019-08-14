@@ -28,14 +28,14 @@
                                             <tr>
                                                 <td>평균응답시간</td>
                                                 <td>{{ result.response_time|floatformat:2 }} 초</td>
-                                                <td>{{ result.rank.correct }}</td>
+                                                <td>{{ response_time_list|length }}명 중 {{ result.rank.correct }}위</td>
                                             </tr>
                                         {% endif %}
                                         {% if result.count != 0 %}
                                             <tr>
                                                 <td>정답률</td>
                                                 <td>{{ result.correct }}/{{ result.count }}({{ result.correct|div:result.count|mul:100|floatformat:2 }}%)</td>
-                                            <td>{{ result.rank.correct }}</td>
+                                                <td>{{ correct_list|length }}명 중 {{ result.rank.correct }}위</td>
                                             </tr>
                                         {% endif %}
                                         </tbody>
