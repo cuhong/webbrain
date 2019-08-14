@@ -135,14 +135,15 @@ class ParticipateGameListInlineAdmin(admin.TabularInline):
 class ParticipateResource(resources.ModelResource):
     class Meta:
         model = ParticipateAdminProxy
-        fields = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
-        export_order = ['research', 'participate_at', 'participant', 'agree_name', 'agree']
+        fields = ['research', 'participate_at', 'participant', 'agree_name', 'agree', 'poll']
+        export_order = ['research', 'participate_at', 'participant', 'agree_name', 'agree', 'poll']
 
     research = resources.Field(attribute='research', column_name='연구')
     participate_at = resources.Field(attribute='participate_at', column_name='연구참여일시')
     participant = resources.Field(attribute='participant', column_name='피험자(아이디)')
     agree_name = resources.Field(attribute='agree_name', column_name='동의자명')
     agree = resources.Field(attribute='agree', column_name='동의여부')
+    poll = resources.Field(attribute='poll', column_name='설문')
 
     def dehydrate_research(self, obj):
         return obj.research.project_title
