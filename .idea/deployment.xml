@@ -11,6 +11,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="webbrain_ys">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../legacy/Webrain_sample" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
   </component>
 </project>
