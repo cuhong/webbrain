@@ -5,7 +5,7 @@ SECRET_KEY = 'e$mu))=4o0(x4=n5auxg=^+w^oy7z2*@l%i8^g&wh$6on@prqw'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.124.82.23', '127.0.0.1', 'ec2-13-125-224-196.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['127.0.0.1', '13.124.126.141']
 
 INSTALLED_APPS = [
     'jet',
