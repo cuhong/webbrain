@@ -11,7 +11,7 @@
         </fileTransfer>
       </webServer>
       <webServer id="c054f6b8-fd68-4b71-84d2-a937d558b05b" name="webbrain_ys" url="http://ec2-13-125-224-196.ap-northeast-2.compute.amazonaws.com">
-        <fileTransfer host="ec2-13-125-224-196.ap-northeast-2.compute.amazonaws.com" port="22" privateKey="$PROJECT_DIR$/webbrain_key.pem" accessType="SFTP" keyPair="true">
+        <fileTransfer host="ec2-13-125-224-196.ap-northeast-2.compute.amazonaws.com" port="22" privateKey="$PROJECT_DIR$/webbrain_key.pem" rootFolder="/home/ubuntu" accessType="SFTP" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
