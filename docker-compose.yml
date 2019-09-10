@@ -27,3 +27,4 @@ services:
 # cardata db 삭제 : docker exec -it cardata psql -d temp -U itechs -c "drop database cardata"
 # cardata db 재생성 : docker exec -it cardata psql -d temp -U itechs -c "create database cardata"
 # cardata db 권한부여 : docker exec -it cardata psql -d temp -U itechs -c "GRANT ALL ON DATABASE cardata TO itechs"
+# sudo docker exec -t webrain pg_dumpall -c -U webrain > dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql

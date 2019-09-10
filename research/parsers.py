@@ -30,8 +30,8 @@ class Parser():
         try:
             self.read_file()  # 파일 읽기 및 line별 분리
             self.split_section()  # 파일 섹션별로 분리
-            self.parse_stimulus()
-            self.parse_sequence()
+            self.parse_stimulus()  # stimulus 분리
+            self.parse_sequence()  # sequence 분리
         except:
             self.parse_result = False
             self.errors = True
@@ -39,6 +39,7 @@ class Parser():
             self.parse_result = True
 
     def read_file(self):
+        # 압축파일 open
         try:
             with open(self.path, 'r', encoding='utf-8') as f:
                 exp_string = f.read()
@@ -58,10 +59,12 @@ class Parser():
                     stimulus['font_size'] = None if splitted_stimulus[3] == 'n' else splitted_stimulus[3]
                 except:
                     stimulus['font_size'] = None
+
                 try:
                     stimulus['font_color'] = None if splitted_stimulus[4] == 'n' else splitted_stimulus[4]
                 except:
                     stimulus['font_color'] = None
+
                 if stimulus['type'] == 'text_file':
                     stimulus['type'] = 'text'
                     with open(os.path.join(self.dirname, splitted_stimulus[2]), 'r') as text_file:
@@ -97,7 +100,6 @@ class Parser():
 
     def parse_sequence(self):
         sequence_type_list = ['pre_sequence', 'main_sequence', 'post_sequence']
-        # sequence_type_dict = {'preseq': 'pre_sequence', 'mainseq': 'main_sequence', 'postseq': 'post_sequence'}
         for type_str in sequence_type_list:
             _temp_sequence_list = self.sectioned_string['sequences'].get(type_str)
             sequence_list = []
