@@ -11,6 +11,8 @@ class CustomParticipantUserCreationForm(UserCreationForm):
         model = User
         fields = ('email', 'name')
 
+    next = forms.CharField(required=False)
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.name = self.cleaned_data['name']

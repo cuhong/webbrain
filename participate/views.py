@@ -120,14 +120,16 @@ class ResearchPollView(LoginRequiredMixin, View):
 class ParticipantSignupView(View):
     def get(self, request):
         form = CustomParticipantUserCreationForm()
-        return render(request, 'frontend/auth/signup.html', context={'form': form})
+        next = request.GET.get('next', None)
+        return render(request, 'frontend/auth/signup.html', context={'form': form, 'next': next})
 
     def post(self, request):
         form = CustomParticipantUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('participate:index')
+            next = form.cleaned_data.get('next', reverse_lazy('participate:index'))
+            return HttpResponseRedirect(next)
         else:
             return render(request, 'frontend/auth/signup.html', context={'form': form})
 
