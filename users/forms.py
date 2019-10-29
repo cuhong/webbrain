@@ -11,7 +11,7 @@ class CustomParticipantUserCreationForm(UserCreationForm):
         model = User
         fields = ('email', 'name')
 
-    next = forms.CharField(required=False)
+    # next = forms.CharField(required=False)
 
     def save(self, commit=True):
         user = super().save(commit=False)
