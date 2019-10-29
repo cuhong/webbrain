@@ -128,7 +128,7 @@ class ParticipantSignupView(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            next = form.POST.get('next', reverse_lazy('participate:index'))
+            next = request.POST.get('next', reverse_lazy('participate:index'))
             return HttpResponseRedirect(next)
         else:
             return render(request, 'frontend/auth/signup.html', context={'form': form})
